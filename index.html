@@ -45,16 +45,19 @@
         </section>
 
         <!-- ==========================================
-             CATEGORÍAS / COLECCIONES
+             CATEGORÍAS / COLECCIONES (ACTUALIZADO)
              ========================================== -->
         <section class="categories-section">
             <h3 class="section-title">Colecciones</h3>
             <div class="categories-grid">
-                <div class="category-card" onclick="filterByCategory('vestidos')">
-                    <span class="category-title">Vestidos</span>
+                <div class="category-card" onclick="filterByCategory('pijamas')">
+                    <span class="category-title">Pijamas</span>
                 </div>
-                <div class="category-card" onclick="filterByCategory('tops')">
-                    <span class="category-title">Tops</span>
+                <div class="category-card" onclick="filterByCategory('lenceria')">
+                    <span class="category-title">Lencería</span>
+                </div>
+                <div class="category-card" onclick="filterByCategory('sets')">
+                    <span class="category-title">Sets</span>
                 </div>
                 <div class="category-card" onclick="filterByCategory('accesorios')">
                     <span class="category-title">Accesorios</span>
@@ -63,7 +66,7 @@
         </section>
 
         <!-- ==========================================
-             CATÁLOGO, BÚSQUEDA Y FILTROS
+             CATÁLOGO, BÚSQUEDA Y FILTROS (ACTUALIZADO)
              ========================================== -->
         <section class="catalog-section" id="catalogo">
             <h3 class="section-title">Nuestro Catálogo</h3>
@@ -77,8 +80,8 @@
                     <select id="filter-category">
                         <option value="">Todas las categorías</option>
                         <option value="pijamas">Pijamas</option>
-                        <option value="tops">Sets</option>
-                        <option value="faldas">Lencerias</option>
+                        <option value="lenceria">Lencería</option>
+                        <option value="sets">Sets</option>
                         <option value="accesorios">Accesorios</option>
                     </select>
 
@@ -200,8 +203,8 @@
                     <p class="total-ves-highlight">Monto a Transferir: <span id="checkout-total-ves">0.00 Bs.</span></p>
                 </div>
                 <div class="bank-details-box">
-                    <h4>Datos para realizar el Pago Móvil:</strong>
-                    <p><strong>Banco:</strong> Venezolano de credito (0104)</p>
+                    <h4>Datos para realizar el Pago Móvil:</h4>
+                    <p><strong>Banco:</strong> Venezolano de Crédito (0104)</p>
                     <p><strong>Teléfono:</strong> 0416-1727585</p>
                     <p><strong>Cédula / RIF:</strong> V-28469015</p>
                 </div>
@@ -285,7 +288,7 @@
                         <button onclick="openProductForm()" style="background: var(--morado-oscuro); color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: bold;">+ Nuevo Producto</button>
                     </div>
 
-                    <!-- FORMULARIO DESPLEGABLE DE PRODUCTO -->
+                    <!-- FORMULARIO DESPLEGABLE DE PRODUCTO (ACTUALIZADO) -->
                     <div id="product-form-box" class="admin-form-box" style="display: none;">
                         <h5 id="form-product-title">Editar Producto</h5>
                         <form onsubmit="saveProduct(event)">
@@ -299,7 +302,12 @@
                             <div style="display: flex; gap: 10px;">
                                 <div class="form-group" style="flex: 1;">
                                     <label>Categoría:</label>
-                                    <input type="text" id="prod-cat" placeholder="vestidos, tops..." required>
+                                    <select id="prod-cat" required style="width: 100%; padding: 8px; border: 1px solid var(--gris-borde); border-radius: 6px;">
+                                        <option value="pijamas">Pijamas</option>
+                                        <option value="lenceria">Lencería</option>
+                                        <option value="sets">Sets</option>
+                                        <option value="accesorios">Accesorios</option>
+                                    </select>
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label>Stock:</label>
@@ -343,77 +351,6 @@
                             </div>
                         </form>
                     </div>
-                    <!-- index.html - Dentro de la pestaña de Ventas (#tab-sales) del modal administrativo -->
-
-<div class="manual-sale-section" style="margin-top: 20px; border-top: 2px solid #e2d5e5; padding-top: 15px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h4 style="margin: 0; color: #4a254b;">Registrar Venta Manual / Presencial</h4>
-        <button type="button" class="cta-button" style="padding: 8px 16px; background-color: #6b21a8; font-size: 0.85rem;" onclick="openManualSaleForm()">
-            ➕ Registrar Venta Manual
-        </button>
-    </div>
-
-    <!-- index.html - Dentro de la pestaña de Ventas (#tab-sales) del modal administrativo -->
-
-<!-- FORMULARIO DE VENTA MANUAL ACTUALIZADO -->
-<div id="manual-sale-form-box" class="admin-form-box" style="display: none; background: #fdf4ff; border: 2px solid #d8b4fe; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(107, 33, 168, 0.1);">
-    <h5 style="margin-top: 0; margin-bottom: 15px; color: #6b21a8; text-align: center; font-size: 1.1rem;">NUEVA VENTA EXTERNA</h5>
-    <form id="manual-sale-form" onsubmit="saveManualSale(event)">
-        
-        <div class="form-group" style="margin-bottom: 12px;">
-            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #4a254b;">Cliente:</label>
-            <input type="text" id="manual-client" placeholder="Ej. María Pérez" required style="width: 100%; padding: 10px; border: 1px solid #e2d5e5; border-radius: 10px;">
-        </div>
-
-        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-            <div class="form-group" style="flex: 1;">
-                <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #4a254b;">Producto:</label>
-                <select id="manual-prod-select" required style="width: 100%; padding: 10px; border: 1px solid #e2d5e5; border-radius: 10px;">
-                    <!-- Se llenará dinámicamente con JS -->
-                </select>
-            </div>
-            <div class="form-group" style="flex: 0 0 80px;">
-                <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #4a254b;">Cant.:</label>
-                <input type="number" id="manual-qty" value="1" min="1" required style="width: 100%; padding: 10px; border: 1px solid #e2d5e5; border-radius: 10px; text-align: center;">
-            </div>
-        </div>
-
-        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-            <div class="form-group" style="flex: 1;">
-                <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #4a254b;">Método de Pago:</label>
-                <select id="manual-payment-method" required style="width: 100%; padding: 10px; border: 1px solid #e2d5e5; border-radius: 10px;">
-                    <option value="">Selecciona método</option>
-                    <option value="USDT">USDT</option>
-                    <option value="Cash (€)">Cash (€)</option>
-                    <option value="Bs. BCV">Bs. BCV</option>
-                    <option value="Cash (€) + Bs. BCV">Múltiple (°€ + Bs.)</option>
-                </select>
-            </div>
-            <!-- NUEVO CAMPO: ESTADO DEL PAGO -->
-            <div class="form-group" style="flex: 1;">
-                <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #4a254b;">Estado del Pago:</label>
-                <select id="manual-payment-status" required style="width: 100%; padding: 10px; border: 1px solid #e2d5e5; border-radius: 10px;">
-                    <option value="Pendiente">❌ Pendiente</option>
-                    <option value="Pagado">✅ Pago Completo</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-actions" style="display: flex; gap: 10px; justify-content: flex-end; padding-top: 15px; border-top: 1px solid #e2d5e5;">
-            <button type="button" class="btn-secondary" style="padding: 10px 20px; border-radius: 20px;" onclick="hideManualSaleForm()">Cancelar</button>
-            <button type="submit" class="btn-save" style="padding: 12px 28px; border-radius: 30px;">Registrar Venta</button>
-        </div>
-    </form>
-</div>
-
-<!-- HISTORIAL DE PEDIDOS ACTUALIZADO (CONTENEDOR) -->
-<h3 style="margin-top: 25px; color: #4a254b; font-size: 1.2rem;">Historial de Pedidos</h3>
-<div id="admin-sales-list" class="admin-list-container sales-list" style="margin-top: 15px;">
-    <!-- El contenido dinámico se generará con JS, incluyendo botones -->
-</div>
-
-    <!-- El resto de tu historial de ventas, estadísticas, etc., continuaría aquí -->
-</div>
 
                     <!-- LISTADO DE PRODUCTOS (ADMIN) -->
                     <div id="admin-inventory-list" class="admin-list-container">
@@ -421,7 +358,7 @@
                     </div>
                 </div>
 
-                <!-- PESTAÑA 2: VENTAS -->
+                <!-- PESTAÑA 2: VENTAS (ACTUALIZADA) -->
                 <div id="tab-sales" class="admin-tab-content" style="display: none;">
                     <div class="admin-stats-cards">
                         <div class="stat-card">
@@ -433,6 +370,67 @@
                             <h3 id="stat-total-eur">€ 0.00</h3>
                         </div>
                     </div>
+
+                    <!-- REGISTRO DE VENTA MANUAL -->
+                    <div class="manual-sale-section" style="margin-top: 20px; border-top: 2px solid #e2d5e5; padding-top: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h4 style="margin: 0; color: #4a254b;">Registrar Venta Manual / Presencial</h4>
+                            <button type="button" class="cta-button" style="padding: 8px 16px; background-color: #6b21a8; font-size: 0.85rem;" onclick="openManualSaleForm()">
+                                ➕ Registrar Venta Manual
+                            </button>
+                        </div>
+
+                        <div id="manual-sale-form-box" class="admin-form-box" style="display: none; background: #fdf4ff; border: 2px solid #d8b4fe; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(107, 33, 168, 0.1);">
+                            <h5 style="margin-top: 0; margin-bottom: 15px; color: #6b21a8; text-align: center; font-size: 1.1rem;">NUEVA VENTA EXTERNA</h5>
+                            <form id="manual-sale-form" onsubmit="saveManualSale(event)">
+                                
+                                <div class="form-group" style="margin-bottom: 12px;">
+                                    <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #4a254b;">Cliente:</label>
+                                    <input type="text" id="manual-client" placeholder="Ej. María Pérez" required style="width: 100%; padding: 10px; border: 1px solid #e2d5e5; border-radius: 10px;">
+                                </div>
+
+                                <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                                    <div class="form-group" style="flex: 1;">
+                                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #4a254b;">Producto:</label>
+                                        <select id="manual-prod-select" required style="width: 100%; padding: 10px; border: 1px solid #e2d5e5; border-radius: 10px;">
+                                            <!-- Se llenará dinámicamente con JS -->
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="flex: 0 0 80px;">
+                                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #4a254b;">Cant.:</label>
+                                        <input type="number" id="manual-qty" value="1" min="1" required style="width: 100%; padding: 10px; border: 1px solid #e2d5e5; border-radius: 10px; text-align: center;">
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                                    <div class="form-group" style="flex: 1;">
+                                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #4a254b;">Método de Pago:</label>
+                                        <select id="manual-payment-method" required style="width: 100%; padding: 10px; border: 1px solid #e2d5e5; border-radius: 10px;">
+                                            <option value="">Selecciona método</option>
+                                            <option value="USDT">USDT</option>
+                                            <option value="Cash (€)">Cash (€)</option>
+                                            <option value="Bs. BCV">Bs. BCV</option>
+                                            <option value="Cash (€) + Bs. BCV">Múltiple (°€ + Bs.)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="flex: 1;">
+                                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #4a254b;">Estado del Pago:</label>
+                                        <select id="manual-payment-status" required style="width: 100%; padding: 10px; border: 1px solid #e2d5e5; border-radius: 10px;">
+                                            <option value="Pendiente">❌ Pendiente</option>
+                                            <option value="Pagado">✅ Pago Completo</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions" style="display: flex; gap: 10px; justify-content: flex-end; padding-top: 15px; border-top: 1px solid #e2d5e5;">
+                                    <button type="button" class="btn-secondary" style="padding: 10px 20px; border-radius: 20px;" onclick="hideManualSaleForm()">Cancelar</button>
+                                    <button type="submit" class="btn-save" style="padding: 12px 28px; border-radius: 30px;">Registrar Venta</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- HISTORIAL DE PEDIDOS -->
                     <h5 style="margin: 15px 0 10px 0; color: var(--morado-texto);">Historial de Pedidos</h5>
                     <div id="admin-sales-list" class="admin-list-container sales-list">
                         <!-- Cargado por JS -->
