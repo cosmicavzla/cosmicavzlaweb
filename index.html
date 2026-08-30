@@ -456,30 +456,32 @@
         <p>© 2026 CÓSMICA. Todos los derechos reservados.</p>
     </footer>
 
+   <!-- ==========================================
+         LIBRERÍAS DE FIREBASE (VERSION COMPAT)
+         ========================================== -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <!-- INICIALIZACIÓN DE FIREBASE -->
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCoG8XuSTmdRq75XtZ4z6XA8BlkIh51N5g",
+        authDomain: "cosmica-tienda.firebaseapp.com",
+        projectId: "cosmica-tienda",
+        storageBucket: "cosmica-tienda.firebasestorage.app",
+        messagingSenderId: "1037817099642",
+        appId: "1:1037817099642:web:e5d3aed8105196aa4b92c3",
+        measurementId: "G-7V2EMNDE9Q"
+      };
+
+      // Inicializar Firebase
+      firebase.initializeApp(firebaseConfig);
+      
+      // Crear la variable global `db` que usa app.js
+      const db = firebase.firestore();
+    </script>
+
+    <!-- ARCHIVO JS PRINCIPAL (Se carga DESPUÉS de inicializar la db) -->
     <script src="app.js"></script>
-
-    <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyCoG8XuSTmdRq75XtZ4z6XA8BlkIh51N5g",
-    authDomain: "cosmica-tienda.firebaseapp.com",
-    projectId: "cosmica-tienda",
-    storageBucket: "cosmica-tienda.firebasestorage.app",
-    messagingSenderId: "1037817099642",
-    appId: "1:1037817099642:web:e5d3aed8105196aa4b92c3",
-    measurementId: "G-7V2EMNDE9Q"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
 </body>
 </html>
