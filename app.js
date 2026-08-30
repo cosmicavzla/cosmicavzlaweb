@@ -888,3 +888,36 @@ function togglePaymentStatus(saleId) {
     saveData();
     renderAdminSales();
 }
+// Se ejecuta solo cuando hay cambios en la base de datos de Firebase
+db.collection("productos").onSnapshot((snapshot) => {
+    let productos = [];
+    snapshot.forEach((doc) => {
+        // Obtenemos los datos del producto junto con su ID único de Firebase
+        productos.push({
+            id: doc.id,
+            ...doc.data()
+        });
+    });
+    
+    // AQUÍ llamas a la función que ya tenías para dibujar/renderizar las tarjetas de productos en el HTML
+    // Por ejemplo: renderizarProductos(productos);
+});
+function guardarProductoFirebase(nuevoProducto) {
+    // nuevoProducto debe ser un objeto con datos como: { nombre: "Pijama", precio: 25, imagen: "url..." }
+    db.collection("productos").add(nuevoProducto)
+        .then((docRef) => {
+            console.log("Producto guardado exitosamente con ID:", docRef.id);
+        })
+        .catch((error) => {
+            console.error("Error al guardar en Firebase:", error);
+        });
+} 
+function eliminarProductoFirebase(idProducto) {
+    db.collection("productos").doc(idProducto).delete()
+        .then(() => {
+            console.log("Producto eliminado correctamente");
+        })
+        .catch((error) => {
+            console.error("Error al borrar:", error);
+        });
+}
