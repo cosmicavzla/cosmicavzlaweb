@@ -58,11 +58,13 @@ function initApp() {
                     ...doc.data()
                 });
             });
-            
+
             const adminSalesList = document.getElementById('admin-sales-list');
             if (adminSalesList && adminSalesList.offsetParent !== null) {
                 renderAdminSales();
             }
+        }, (error) => {
+            console.error("Error al escuchar ventas en Firebase:", error);
         });
     } else {
         console.error("Firebase DB no está inicializado. Verifica las etiquetas <script> de Firebase en index.html.");
@@ -94,7 +96,7 @@ function setupEventListeners() {
     document.getElementById('open-cart-btn')?.addEventListener('click', openCart);
     document.getElementById('close-cart-btn')?.addEventListener('click', closeCart);
     document.getElementById('cart-drawer-overlay')?.addEventListener('click', closeCart);
-    
+
     // Modales generales
     document.getElementById('close-modal-btn')?.addEventListener('click', closeModal);
     document.getElementById('checkout-btn')?.addEventListener('click', openCheckout);
@@ -126,7 +128,7 @@ function setupCollectionClicks() {
 
 function filterByCategory(categoryName) {
     const cleanCat = cleanText(categoryName);
-    
+
     // Sincronizar con el select de filtros
     const filterSelect = document.getElementById('filter-category');
     if (filterSelect) {
@@ -279,7 +281,7 @@ function changeCartQty(productId, delta) {
     if (!item || !product) return;
 
     const newQty = item.qty + delta;
-    
+
     if (newQty <= 0) {
         removeFromCart(productId);
     } else if (newQty > product.stock) {
@@ -387,7 +389,7 @@ function closeModal() {
 function openCheckout() {
     if (cart.length === 0) return alert('Tu carrito está vacío.');
     closeCart();
-    
+
     document.getElementById('checkout-step-1').style.display = 'block';
     document.getElementById('checkout-step-2').style.display = 'none';
     document.getElementById('checkout-step-3').style.display = 'none';
@@ -409,7 +411,7 @@ function processOrder(e) {
     const name = document.getElementById('client-name').value.trim();
     const phone = document.getElementById('client-phone').value.trim();
     const totalEur = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
-    
+
     const orderNum = 'COS-' + Math.floor(1000 + Math.random() * 9000);
     currentOrder = { number: orderNum, clientName: name, phone: phone, totalEur: totalEur, items: [...cart] };
 
@@ -449,8 +451,10 @@ function processOrder(e) {
 function goToPaymentStep() {
     if (!currentOrder) return;
     const totalVes = currentOrder.totalEur * bcvRate;
-    document.getElementById('bcv-rate-display').innerText = bcvRate.toFixed(2);
-    document.getElementById('checkout-total-ves').innerText = `${totalVes.toFixed(2)} Bs.`;
+    
+    document.querySelectorAll('#bcv-rate-display').forEach(el => el.innerText = bcvRate.toFixed(2));
+    const vesElem = document.getElementById('checkout-total-ves');
+    if (vesElem) vesElem.innerText = `${totalVes.toFixed(2)} Bs.`;
 
     document.getElementById('checkout-step-2').style.display = 'none';
     document.getElementById('checkout-step-3').style.display = 'block';
@@ -525,6 +529,20 @@ function switchAdminTab(tab) {
     }
 }
 
+function saveBcvRate(e) {
+    e.preventDefault();
+    const newRate = parseFloat(document.getElementById('admin-rate-input').value);
+    if (isNaN(newRate) || newRate <= 0) {
+        alert('Por favor ingresa una tasa válida.');
+        return;
+    }
+    bcvRate = newRate;
+    saveData();
+    
+    document.querySelectorAll('#bcv-rate-display').forEach(el => el.innerText = bcvRate.toFixed(2));
+    alert('¡Tasa BCV actualizada exitosamente! 💵');
+}
+
 // ==========================================
 // 8. GESTIÓN DE INVENTARIO (ADMIN CON FIREBASE)
 // ==========================================
@@ -597,7 +615,7 @@ function openProductForm(productId = null) {
     const btnDelete = document.getElementById('btn-delete-prod');
     const form = box.querySelector('form');
 
-    form.reset();
+    if (form) form.reset();
     clearProductImage();
 
     if (productId) {
@@ -605,7 +623,7 @@ function openProductForm(productId = null) {
         if (!p) return;
 
         title.innerText = '✏️ Editar Producto';
-        btnDelete.style.display = 'inline-block';
+        if (btnDelete) btnDelete.style.display = 'inline-block';
 
         document.getElementById('prod-id').value = p.firestoreId || p.id;
         document.getElementById('prod-name').value = p.name;
@@ -613,7 +631,7 @@ function openProductForm(productId = null) {
         document.getElementById('prod-stock').value = p.stock;
         document.getElementById('prod-price').value = p.price;
         document.getElementById('prod-promo-price').value = p.promoPrice || '';
-        document.getElementById('prod-is-promo').checked = p.isPromo;
+        document.getElementById('prod-is-promo').checked = !!p.isPromo;
         
         if (p.image) {
             document.getElementById('prod-img').value = p.image;
@@ -623,7 +641,7 @@ function openProductForm(productId = null) {
 
     } else {
         title.innerText = '➕ Nuevo Producto';
-        btnDelete.style.display = 'none';
+        if (btnDelete) btnDelete.style.display = 'none';
         document.getElementById('prod-id').value = '';
     }
 
@@ -724,7 +742,7 @@ function hideManualSaleForm() {
     const box = document.getElementById('manual-sale-form-box');
     if (box) {
         box.style.display = 'none';
-        document.getElementById('manual-sale-form').reset();
+        document.getElementById('manual-sale-form')?.reset();
     }
 }
 
@@ -793,39 +811,23 @@ function renderAdminSales() {
         return;
     }
 
-    list.innerHTML = salesHistory.map(sale => {
-        const isPaid = sale.paymentStatus === 'Pagado' || sale.paymentStatus === 'Completado';
-        const statusColor = isPaid ? '#10b981' : '#f59e0b';
-
+    list.innerHTML = salesHistory.map(s => {
+        const statusColor = s.paymentStatus === 'Completado' || s.paymentStatus === 'Pagado' ? '#059669' : '#d97706';
         return `
-            <div class="admin-sale-row" style="padding: 10px; border-bottom: 1px solid #eee; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-                <div>
-                    <strong>${sale.number || 'COS-XXXX'}</strong> - <span style="color:var(--morado-texto); font-weight:bold;">${sale.clientName}</span><br>
-                    <small style="color:var(--texto-suave);">${sale.itemsSummary || 'Sin detalle'}</small><br>
-                    <small style="color: #666;">Fecha: ${sale.date || 'Reciente'} | Método: ${sale.method || 'Web'}</small>
+            <div class="admin-sale-row" style="padding: 10px; border-bottom: 1px solid #eee; font-size: 0.85rem;">
+                <div style="display:flex; justify-content:space-between; font-weight:bold;">
+                    <span>${s.number || 'SIN-COD'} - ${s.clientName || 'Cliente'}</span>
+                    <span style="color: var(--morado-principal);">€ ${(s.totalEur || 0).toFixed(2)}</span>
                 </div>
-                <div style="text-align: right; min-width: 90px;">
-                    <strong style="font-size: 0.95rem; color: var(--morado-principal);">€ ${(sale.totalEur || 0).toFixed(2)}</strong><br>
-                    <span style="font-size:0.75rem; font-weight:bold; color: ${statusColor};">${sale.paymentStatus || 'Pendiente'}</span>
+                <div style="display:flex; justify-content:space-between; margin-top:4px; color: var(--texto-suave); font-size:0.75rem;">
+                    <span>${s.itemsSummary || 'Sin detalle'}</span>
+                    <span>${s.date || ''}</span>
+                </div>
+                <div style="margin-top:4px; font-size:0.75rem;">
+                    <span style="background: #f3f4f6; padding:2px 6px; border-radius:4px;">${s.method || 'Web'}</span>
+                    <span style="color: ${statusColor}; font-weight:bold; margin-left:6px;">${s.paymentStatus || 'Pendiente'}</span>
                 </div>
             </div>
         `;
     }).join('');
-}
-
-function saveBcvRate(e) {
-    e.preventDefault();
-    const newRate = parseFloat(document.getElementById('admin-rate-input').value);
-    if (isNaN(newRate) || newRate <= 0) {
-        alert('Por favor, ingresa una tasa válida.');
-        return;
-    }
-
-    bcvRate = newRate;
-    saveData();
-
-    const rateElems = document.querySelectorAll('#bcv-rate-display');
-    rateElems.forEach(el => el.innerText = bcvRate.toFixed(2));
-
-    alert(`¡Tasa BCV actualizada exitosamente a ${bcvRate.toFixed(2)} Bs./€! 💵`);
 }
