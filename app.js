@@ -781,66 +781,93 @@ function renderAdminSales() {
 
     const totalCount = salesHistory.length;
     const totalEur = salesHistory.reduce((acc, sale) => acc + (sale.totalEur || 0), 0);
+
     document.getElementById('stat-total-sales').innerText = totalCount;
-    document.getElementById('stat-total-eur').innerText = `€ ${totalEur.toFixed(2)}`;
+    const statRevenueElem = document.getElementById('stat-total-revenue');
+    if (statRevenueElem) statRevenueElem.innerText = `€ ${totalEur.toFixed(2)}`;
 
     if (salesHistory.length === 0) {
-        list.innerHTML = '<p style="text-align: center; color: #888; font-size: 0.85rem; margin-top: 15px;">No hay ventas registradas aún ✨.</p>';
+        list.innerHTML = '<p style="text-align:center; color:#888; font-size:0.85rem; padding:15px;">No hay ventas registradas en el sistema.</p>';
         return;
     }
 
-    const sortedSales = [...salesHistory].reverse();
-
-    list.innerHTML = sortedSales.map(sale => {
-        const statusClass = sale.paymentStatus === 'Pagado' ? 'pagado' : 'pendiente';
-        const statusText = sale.paymentStatus === 'Pagado' ? '✅ Pagado' : '❌ Pendiente';
-        const docId = sale.firestoreId;
-
+    list.innerHTML = salesHistory.map(sale => {
+        const saleId = sale.firestoreId || sale.id;
+        const statusClass = sale.paymentStatus === 'Pagado' ? 'color:#16a34a;' : 'color:#d97706;';
+        
         return `
-            <div class="sales-item-row admin-list-item" data-id="${docId}">
-                <div class="sales-item-details">
-                    <strong>Pedido: ${sale.number}</strong><br>
-                    <small>${sale.clientName} | ${sale.itemsSummary}</small><br>
-                    <small style="color: var(--morado-principal);">${sale.date} via ${sale.method || 'Web'}</small>
+            <div class="admin-sale-row" style="padding: 10px; border-bottom: 1px solid #eee; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                <div style="flex: 1;">
+                    <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 4px;">
+                        <strong>${sale.number || 'SIN-FOLIO'}</strong> 
+                        <span style="font-size:0.75rem; color:#666;">(${sale.date || 'Sin fecha'})</span>
+                        <span style="font-size:0.75rem; font-weight:bold; ${statusClass}">• ${sale.paymentStatus || 'Pendiente'}</span>
+                    </div>
+                    <p style="margin: 2px 0; color: var(--morado-texto);">👤 ${sale.clientName || 'Cliente General'}</p>
+                    <small style="color: var(--texto-suave); display: block;">🛍️ ${sale.itemsSummary || 'Sin detalle'}</small>
+                    <small style="color: #666;">💳 Método: <strong>${sale.method || 'Efectivo'}</strong></small>
                 </div>
-                <div class="sales-item-actions">
-                    <span class="payment-status-badge ${statusClass}">${statusText}</span>
-                    <strong style="color: var(--morado-texto); font-size:1rem; margin: 0 10px;">€ ${(sale.totalEur || 0).toFixed(2)}</strong>
-                    
-                    <button class="btn-action-sm btn-status-sale" title="Cambiar Estado de Pago" onclick="togglePaymentStatus('${docId}')">🔄</button>
-                    <button class="btn-action-sm btn-delete-sale" title="Eliminar Venta" onclick="deleteSale('${docId}')">🗑️</button>
+                <div style="text-align: right; min-width: 90px;">
+                    <strong style="font-size: 1rem; color: var(--morado-principal); display: block;">€ ${(sale.totalEur || 0).toFixed(2)}</strong>
+                    <div style="display: flex; gap: 4px; justify-content: flex-end; margin-top: 6px;">
+                        ${sale.paymentStatus !== 'Pagado' ? `
+                            <button onclick="toggleSaleStatus('${saleId}', 'Pagado')" style="padding: 3px 6px; font-size: 0.7rem; background: #16a34a; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                ✓ Pagado
+                            </button>
+                        ` : `
+                            <button onclick="toggleSaleStatus('${saleId}', 'Pendiente')" style="padding: 3px 6px; font-size: 0.7rem; background: #ea580c; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                ↺ Pendiente
+                            </button>
+                        `}
+                        <button onclick="deleteSaleRecord('${saleId}')" style="padding: 3px 6px; font-size: 0.7rem; background: #dc2626; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            🗑️
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
-    }).join('');
+    }).reverse().join('');
 }
 
-function deleteSale(saleId) {
-    if (confirm(`⚠️ ¿Estás segura de eliminar permanentemente esta venta?`)) {
+function toggleSaleStatus(saleId, newStatus) {
+    if (!db || !saleId) return;
+
+    db.collection("ventas").doc(saleId).update({
+        paymentStatus: newStatus
+    }).then(() => {
+        console.log(`Estado de pago actualizado a: ${newStatus}`);
+    }).catch(error => {
+        console.error("Error al actualizar estado de la venta:", error);
+    });
+}
+
+function deleteSaleRecord(saleId) {
+    if (!db || !saleId) return;
+
+    if (confirm('⚠️ ¿Deseas eliminar este registro de venta del historial?')) {
         db.collection("ventas").doc(saleId).delete()
-            .then(() => alert('Venta eliminada del historial correctamente.'))
+            .then(() => alert('Registro de venta eliminado.'))
             .catch(error => console.error("Error al eliminar venta:", error));
     }
 }
 
-function togglePaymentStatus(saleId) {
-    const sale = salesHistory.find(s => s.firestoreId === saleId);
-    if (!sale) return;
+function updateBcvRate(e) {
+    if (e) e.preventDefault();
+    const rateInput = document.getElementById('admin-rate-input');
+    if (!rateInput) return;
 
-    const newStatus = sale.paymentStatus === 'Pagado' ? 'Pendiente' : 'Pagado';
-    db.collection("ventas").doc(saleId).update({ paymentStatus: newStatus });
-}
-
-function saveManualRate() {
-    const input = document.getElementById('admin-rate-input');
-    const newRate = parseFloat(input.value);
-
-    if (!isNaN(newRate) && newRate > 0) {
-        bcvRate = newRate;
-        saveData();
-        document.querySelectorAll('#bcv-rate-display').forEach(el => el.innerText = bcvRate.toFixed(2));
-        alert('Tasa BCV actualizada correctamente ✅.');
-    } else {
-        alert('Por favor ingresa una tasa válida.');
+    const newRate = parseFloat(rateInput.value);
+    if (isNaN(newRate) || newRate <= 0) {
+        alert('Por favor ingresa un valor de tasa válido.');
+        return;
     }
+
+    bcvRate = newRate;
+    saveData();
+
+    // Actualizar elementos visuales en la interfaz
+    const rateElems = document.querySelectorAll('#bcv-rate-display');
+    rateElems.forEach(el => el.innerText = bcvRate.toFixed(2));
+
+    alert(`¡Tasa BCV actualizada a ${bcvRate.toFixed(2)} Bs./€! ✨`);
 }
