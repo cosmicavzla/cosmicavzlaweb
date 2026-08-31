@@ -359,6 +359,9 @@ h1, h2, h3, h4, h5 {
     max-width: 260px; /* Tamaño unificado */
     width: 100%;
     margin: 0 auto;
+    height: 320px; /* Aumenta este valor (ej. de 200px o 250px a 320px o 350px) */
+    object-fit: cover; /* Mantiene la proporción de la foto sin deformarla */
+    border-radius: 8px;
 }
 
 .product-card:hover {
