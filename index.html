@@ -45,28 +45,28 @@
         </section>
 
         <!-- ==========================================
-             CATEGORÍAS / COLECCIONES (ACTUALIZADO)
+             CATEGORÍAS / COLECCIONES
              ========================================== -->
         <section class="categories-section">
             <h3 class="section-title">Colecciones</h3>
             <div class="categories-grid">
-                <div class="category-card" onclick="filterByCategory('pijamas')">
+                <div class="category-card" data-categoria="pijamas">
                     <span class="category-title">Pijamas</span>
                 </div>
-                <div class="category-card" onclick="filterByCategory('lenceria')">
+                <div class="category-card" data-categoria="lenceria">
                     <span class="category-title">Lencería</span>
                 </div>
-                <div class="category-card" onclick="filterByCategory('sets')">
+                <div class="category-card" data-categoria="sets">
                     <span class="category-title">Sets</span>
                 </div>
-                <div class="category-card" onclick="filterByCategory('accesorios')">
+                <div class="category-card" data-categoria="accesorios">
                     <span class="category-title">Accesorios</span>
                 </div>
             </div>
         </section>
 
         <!-- ==========================================
-             CATÁLOGO, BÚSQUEDA Y FILTROS (ACTUALIZADO)
+             CATÁLOGO, BÚSQUEDA Y FILTROS
              ========================================== -->
         <section class="catalog-section" id="catalogo">
             <h3 class="section-title">Nuestro Catálogo</h3>
@@ -288,7 +288,7 @@
                         <button onclick="openProductForm()" style="background: var(--morado-oscuro); color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: bold;">+ Nuevo Producto</button>
                     </div>
 
-                    <!-- FORMULARIO DESPLEGABLE DE PRODUCTO (ACTUALIZADO) -->
+                    <!-- FORMULARIO DESPLEGABLE DE PRODUCTO -->
                     <div id="product-form-box" class="admin-form-box" style="display: none;">
                         <h5 id="form-product-title">Editar Producto</h5>
                         <form onsubmit="saveProduct(event)">
@@ -358,7 +358,7 @@
                     </div>
                 </div>
 
-                <!-- PESTAÑA 2: VENTAS (ACTUALIZADA) -->
+                <!-- PESTAÑA 2: VENTAS -->
                 <div id="tab-sales" class="admin-tab-content" style="display: none;">
                     <div class="admin-stats-cards">
                         <div class="stat-card">
@@ -481,7 +481,7 @@
       const db = firebase.firestore();
     </script>
 
-    <!-- ARCHIVO JS PRINCIPAL (Se carga DESPUÉS de inicializar la db) -->
+    <!-- ARCHIVO JS PRINCIPAL -->
     <script src="app.js"></script>
 </body>
 </html>
