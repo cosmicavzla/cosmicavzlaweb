@@ -8,6 +8,16 @@ let bcvRate = parseFloat(localStorage.getItem('cosmica_rate')) || 36.50;
 let currentOrder = null;
 const ADMIN_PASSWORD = "Fioremarie";
 
+// Función global para normalizar textos (elimina tildes, mayúsculas y espacios)
+function cleanText(text) {
+    return (text || '')
+        .toString()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+}
+
 // Guardar preferencia de tasa y carrito en localStorage
 function saveData() {
     localStorage.setItem('cosmica_cart', JSON.stringify(cart));
@@ -103,15 +113,6 @@ function setupCollectionClicks() {
         boton.style.cursor = "pointer";
         boton.addEventListener("click", () => {
             let catText = boton.dataset.categoria || boton.textContent.trim();
-            catText = catText.toLowerCase();
-
-            // Sincronizar con el select de filtros
-            const filterSelect = document.getElementById('filter-category');
-            if (filterSelect) {
-                filterSelect.value = catText;
-            }
-
-            // Aplicar el filtro visual
             filterByCategory(catText);
 
             // Desplazar suavemente hasta la sección de catálogo
@@ -124,16 +125,30 @@ function setupCollectionClicks() {
 }
 
 function filterByCategory(categoryName) {
-    const cleanCat = (categoryName || '').toLowerCase().trim();
+    const cleanCat = cleanText(categoryName);
+    
+    // Sincronizar con el select de filtros
     const filterSelect = document.getElementById('filter-category');
-    if (filterSelect) filterSelect.value = cleanCat;
+    if (filterSelect) {
+        for (let option of filterSelect.options) {
+            if (cleanText(option.value) === cleanCat) {
+                filterSelect.value = option.value;
+                break;
+            }
+        }
+    }
 
     if (!cleanCat) {
         renderProducts(products);
         return;
     }
 
-    const filtered = products.filter(p => (p.category || '').toLowerCase().trim() === cleanCat);
+    // Filtrar evaluando tanto 'category' como 'cat'
+    const filtered = products.filter(p => {
+        const prodCat = cleanText(p.category || p.cat);
+        return prodCat === cleanCat;
+    });
+
     renderProducts(filtered);
 }
 
@@ -183,13 +198,14 @@ function renderProducts(productsToRender) {
 }
 
 function applyFilters() {
-    const search = document.getElementById('search-input')?.value.toLowerCase().trim() || '';
-    const category = document.getElementById('filter-category')?.value.toLowerCase().trim() || '';
+    const search = cleanText(document.getElementById('search-input')?.value);
+    const category = cleanText(document.getElementById('filter-category')?.value);
     const sort = document.getElementById('sort-by')?.value || 'default';
 
     let filtered = products.filter(p => {
-        const matchesSearch = (p.name || '').toLowerCase().includes(search);
-        const matchesCategory = !category || (p.category || '').toLowerCase().trim() === category;
+        const matchesSearch = cleanText(p.name).includes(search);
+        const prodCat = cleanText(p.category || p.cat);
+        const matchesCategory = !category || prodCat === category;
         return matchesSearch && matchesCategory;
     });
 
@@ -347,7 +363,7 @@ function openProductModal(productId) {
                         <strong style="font-size: 1.4rem; color: var(--morado-principal);">€ ${product.price.toFixed(2)}</strong>
                     `}
                 </div>
-                <p style="font-size:0.9rem; margin-bottom:5px;"><strong>Categoría:</strong> ${(product.category || '').toUpperCase()}</p>
+                <p style="font-size:0.9rem; margin-bottom:5px;"><strong>Categoría:</strong> ${((product.category || product.cat) || '').toUpperCase()}</p>
                 <p style="font-size:0.9rem; margin-bottom:10px;"><strong>Disponible:</strong> ${product.stock} unidades</p>
                 <p style="color: var(--texto-suave); margin: 15px 0; font-size:0.95rem;">${product.description || 'Producto Cósmica ✨'}</p>
                 <button class="cta-button" style="width: 100%;" onclick="addToCart('${idVal}'); closeModal();" ${product.stock === 0 ? 'disabled' : ''}>
@@ -593,7 +609,7 @@ function openProductForm(productId = null) {
 
         document.getElementById('prod-id').value = p.firestoreId || p.id;
         document.getElementById('prod-name').value = p.name;
-        document.getElementById('prod-cat').value = (p.category || 'pijamas').toLowerCase();
+        document.getElementById('prod-cat').value = cleanText(p.category || p.cat) || 'pijamas';
         document.getElementById('prod-stock').value = p.stock;
         document.getElementById('prod-price').value = p.price;
         document.getElementById('prod-promo-price').value = p.promoPrice || '';
@@ -624,7 +640,7 @@ function saveProduct(e) {
 
     const id = document.getElementById('prod-id').value;
     const name = document.getElementById('prod-name').value.trim();
-    const cat = document.getElementById('prod-cat').value.trim().toLowerCase();
+    const cat = cleanText(document.getElementById('prod-cat').value);
     const stock = parseInt(document.getElementById('prod-stock').value) || 0;
     const price = parseFloat(document.getElementById('prod-price').value) || 0;
     const promoPrice = parseFloat(document.getElementById('prod-promo-price').value) || 0;
