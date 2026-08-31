@@ -344,7 +344,7 @@ h1, h2, h3, h4, h5 {
    ========================================================================== */
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 25px;
 }
 
@@ -356,12 +356,9 @@ h1, h2, h3, h4, h5 {
     display: flex;
     flex-direction: column;
     transition: transform 0.2s, box-shadow 0.2s;
-    max-width: 260px; /* Tamaño unificado */
     width: 100%;
     margin: 0 auto;
-    height: 320px; /* Aumenta este valor (ej. de 200px o 250px a 320px o 350px) */
-    object-fit: cover; /* Mantiene la proporción de la foto sin deformarla */
-    border-radius: 8px;
+    height: auto;
 }
 
 .product-card:hover {
@@ -371,7 +368,7 @@ h1, h2, h3, h4, h5 {
 
 .product-img-box {
     width: 100%;
-    height: 190px; /* Altura máxima unificada */
+    height: 280px; /* Aumentado a 280px para dar gran presencia a la imagen */
     overflow: hidden;
     position: relative;
     cursor: pointer;
@@ -380,7 +377,7 @@ h1, h2, h3, h4, h5 {
 .product-img-box img, .product-img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ajuste sin deformación */
+    object-fit: cover;
 }
 
 .product-info {
@@ -395,7 +392,7 @@ h1, h2, h3, h4, h5 {
     font-weight: 600;
     margin-bottom: 8px;
     color: var(--morado-texto);
-    min-height: 2.4em; /* Espacio uniforme para títulos */
+    min-height: 2.4em;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -754,7 +751,7 @@ h1, h2, h3, h4, h5 {
 }
 
 /* ==========================================
-   11. PANEL ADMINISTRADOR - ESTILOS ESPECÍFICOS
+   11. PANEL ADMINISTRADOR Y VENTAS
    ========================================== */
 .admin-modal-card {
     padding: 25px;
@@ -926,6 +923,125 @@ h1, h2, h3, h4, h5 {
     border: 1px solid #eee;
 }
 
+/* Ventas Manuales */
+#manual-sale-form-box {
+    box-shadow: 0 4px 12px rgba(107, 33, 168, 0.1);
+}
+
+#manual-sale-form .form-group input,
+#manual-sale-form .form-group select {
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+#manual-sale-form .form-group input:focus,
+#manual-sale-form .form-group select:focus {
+    border-color: #9b68b4 !important;
+}
+
+#manual-sale-form .payment-method-group select {
+    cursor: pointer;
+}
+
+#manual-sale-form .btn-save {
+    background-color: #9b68b4;
+    color: white;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+#manual-sale-form .btn-save:hover {
+    background-color: #6b21a8;
+}
+
+#manual-sale-form .btn-secondary {
+    background-color: #e2d5e5;
+    color: #4a254b;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+#manual-sale-form .btn-secondary:hover {
+    background-color: #d8c4db;
+}
+
+/* Estados de Pago y Acciones de Venta */
+.admin-sales-list .sales-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: var(--blanco);
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    transition: background-color 0.2s;
+}
+
+.admin-sales-list .sales-item-row:hover {
+    background-color: #faf8fc;
+}
+
+.admin-sales-list .sales-item-details {
+    flex: 1;
+    font-size: 0.85rem;
+}
+
+.admin-sales-list .sales-item-details strong {
+    color: var(--morado-texto);
+}
+
+.admin-sales-list .sales-item-details small {
+    color: var(--texto-suave);
+}
+
+.admin-sales-list .sales-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: right;
+}
+
+.payment-status-badge {
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.payment-status-badge.pendiente {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.payment-status-badge.pagado {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.btn-action-sm {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.btn-action-sm:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-delete-sale {
+    color: #dc2626;
+}
+
+.btn-status-sale {
+    color: var(--morado-principal);
+}
+
 /* ==========================================
    12. RESPONSIVO (DISPOSITIVOS MÓVILES)
    ========================================== */
@@ -944,7 +1060,7 @@ h1, h2, h3, h4, h5 {
     }
 
     .nav-links {
-        display: none; /* Ocultar enlaces principales en móvil */
+        display: none;
     }
 
     .hero-banner {
@@ -999,7 +1115,7 @@ h1, h2, h3, h4, h5 {
     }
 
     .product-img-box {
-        height: 150px;
+        height: 220px; /* Aumentado de 150px a 220px para celulares */
     }
     
     .product-title {
@@ -1022,131 +1138,4 @@ h1, h2, h3, h4, h5 {
     .admin-stats-cards {
         flex-direction: column;
     }
-}
-/* style.css - Añade esto al final de tu archivo */
-
-/* --- ESTILOS ESPECÍFICOS PARA VENTAS MANUALES --- */
-#manual-sale-form-box {
-    box-shadow: 0 4px 12px rgba(107, 33, 168, 0.1);
-}
-
-#manual-sale-form .form-group input,
-#manual-sale-form .form-group select {
-    outline: none;
-    transition: border-color 0.2s;
-}
-
-#manual-sale-form .form-group input:focus,
-#manual-sale-form .form-group select:focus {
-    border-color: #9b68b4 !important;
-}
-
-#manual-sale-form .payment-method-group select {
-    cursor: pointer;
-}
-
-#manual-sale-form .btn-save {
-    background-color: #9b68b4;
-    color: white;
-    font-weight: 600;
-    transition: background-color 0.2s;
-}
-
-#manual-sale-form .btn-save:hover {
-    background-color: #6b21a8;
-}
-
-#manual-sale-form .btn-secondary {
-    background-color: #e2d5e5;
-    color: #4a254b;
-    font-weight: 600;
-    transition: background-color 0.2s;
-}
-
-#manual-sale-form .btn-secondary:hover {
-    background-color: #d8c4db;
-}
-/* style.css - Añade esto al final de tu archivo */
-
-/* --- ESTILOS PARA ESTADOS DE PAGO Y ACCIONES DE VENTA --- */
-
-/* Contenedor de cada venta en el historial */
-.admin-sales-list .sales-item-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
-    background-color: var(--blanco);
-    border: 1px solid var(--gris-borde);
-    border-radius: 12px;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-    transition: background-color 0.2s;
-}
-
-.admin-sales-list .sales-item-row:hover {
-    background-color: #faf8fc;
-}
-
-/* Columna de detalles principales */
-.admin-sales-list .sales-item-details {
-    flex: 1;
-    font-size: 0.85rem;
-}
-
-.admin-sales-list .sales-item-details strong {
-    color: var(--morado-texto);
-}
-
-.admin-sales-list .sales-item-details small {
-    color: var(--texto-suave);
-}
-
-/* Columna de estado y acciones */
-.admin-sales-list .sales-item-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-align: right;
-}
-
-/* Badges para el estado de pago */
-.payment-status-badge {
-    padding: 4px 8px;
-    border-radius: 8px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.payment-status-badge.pendiente {
-    background-color: #fee2e2; /* Rojo suave */
-    color: #991b1b; /* Rojo oscuro */
-}
-
-.payment-status-badge.pagado {
-    background-color: #d1fae5; /* Verde suave */
-    color: #065f46; /* Verde oscuro */
-}
-
-/* Botones de acción (Eliminar y Cambiar Estado) */
-.btn-action-sm {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 4px;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-}
-
-.btn-action-sm:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-}
-
-.btn-delete-sale {
-    color: #dc2626; /* Rojo para eliminar */
-}
-
-.btn-status-sale {
-    color: var(--morado- principal); /* Morado para cambiar estado */
 }
