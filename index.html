@@ -1,5 +1,4 @@
-
-              <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -286,18 +285,18 @@
                 <div id="tab-products" class="admin-tab-content">
                     <div class="admin-section-header">
                         <h4 class="modal-title-purple">Productos</h4>
-                        <button onclick="openProductForm()" class="btn-add-product">+ Nuevo Producto</button>
+                        <button type="button" onclick="openProductForm()" class="btn-add-product">+ Nuevo Producto</button>
                     </div>
 
-                    <!-- FORMULARIO DESPLEGABLE DE PRODUCTO -->
+                    <!-- FORMULARIO DE PRODUCTO -->
                     <div id="product-form-box" class="admin-form-box step-container-hidden">
                         <h5 id="form-product-title">Editar Producto</h5>
-                        <form onsubmit="saveProduct(event)">
+                        <form id="main-product-form" onsubmit="saveProduct(event)">
                             <input type="hidden" id="prod-id">
                             
                             <div class="form-group">
                                 <label for="prod-name">Nombre del Producto:</label>
-                                <input type="text" id="prod-name" required>
+                                <input type="text" id="prod-name" required placeholder="Ej. Pijama Satén Rosa">
                             </div>
 
                             <div class="form-group">
@@ -316,23 +315,23 @@
                                 <div class="sizes-stock-inputs">
                                     <div class="size-input-item">
                                         <label for="prod-stock-xs">XS</label>
-                                        <input type="number" id="prod-stock-xs" min="0" value="0" placeholder="0">
+                                        <input type="number" id="prod-stock-xs" min="0" value="0">
                                     </div>
                                     <div class="size-input-item">
                                         <label for="prod-stock-s">S</label>
-                                        <input type="number" id="prod-stock-s" min="0" value="0" placeholder="0">
+                                        <input type="number" id="prod-stock-s" min="0" value="0">
                                     </div>
                                     <div class="size-input-item">
                                         <label for="prod-stock-m">M</label>
-                                        <input type="number" id="prod-stock-m" min="0" value="0" placeholder="0">
+                                        <input type="number" id="prod-stock-m" min="0" value="0">
                                     </div>
                                     <div class="size-input-item">
                                         <label for="prod-stock-l">L</label>
-                                        <input type="number" id="prod-stock-l" min="0" value="0" placeholder="0">
+                                        <input type="number" id="prod-stock-l" min="0" value="0">
                                     </div>
                                     <div class="size-input-item">
                                         <label for="prod-stock-xl">XL</label>
-                                        <input type="number" id="prod-stock-xl" min="0" value="0" placeholder="0">
+                                        <input type="number" id="prod-stock-xl" min="0" value="0">
                                     </div>
                                 </div>
                             </div>
@@ -340,7 +339,7 @@
                             <div class="form-row-flex">
                                 <div class="form-group flex-1">
                                     <label for="prod-price">Precio Base (€):</label>
-                                    <input type="number" step="0.01" id="prod-price" required>
+                                    <input type="number" step="0.01" id="prod-price" required placeholder="0.00">
                                 </div>
                                 <div class="form-group flex-1">
                                     <label for="prod-promo-price">Precio Promo (€):</label>
@@ -369,7 +368,7 @@
                             <div class="form-actions">
                                 <button type="button" id="btn-delete-prod" onclick="deleteCurrentProduct()" class="btn-danger">🗑️ Eliminar</button>
                                 <button type="button" onclick="closeProductForm()" class="btn-secondary">Cancelar</button>
-                                <button type="submit" class="btn-save">Guardar</button>
+                                <button type="submit" id="btn-submit-prod" class="btn-save">Guardar</button>
                             </div>
                         </form>
                     </div>
@@ -470,7 +469,7 @@
                     <div class="rate-config-box">
                         <label for="admin-rate-input">Tasa Oficial BCV (Bs por €):</label>
                         <input type="number" step="0.01" id="admin-rate-input" placeholder="Ej. 36.50">
-                        <button onclick="saveManualRate()" class="cta-button btn-full-width btn-margin-top">Actualizar Tasa</button>
+                        <button type="button" onclick="saveManualRate()" class="cta-button btn-full-width btn-margin-top">Actualizar Tasa</button>
                     </div>
                 </div>
             </div>
