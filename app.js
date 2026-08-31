@@ -1,10 +1,7 @@
 // ==========================================
 // 1. ESTADO GLOBAL DE LA APLICACIÓN
 // ==========================================
-// Arreglo local donde se mantendrán los productos sincronizados desde Firebase
 let products = [];
-
-// Estado de la interfaz y persistencia local
 let cart = JSON.parse(localStorage.getItem('cosmica_cart')) || [];
 let salesHistory = [];
 let bcvRate = parseFloat(localStorage.getItem('cosmica_rate')) || 36.50;
@@ -20,7 +17,7 @@ function saveData() {
 // ==========================================
 // 2. INICIALIZACIÓN Y EVENTOS DE FIREBASE
 // ==========================================
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
     // 1. Escuchar productos en tiempo real desde Firebase Firestore
     if (typeof db !== 'undefined') {
         db.collection("productos").onSnapshot((snapshot) => {
@@ -58,16 +55,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     } else {
-        console.error("Firebase DB no está inicializado. Verifica las etiquetas <script> de Firebase.");
+        console.error("Firebase DB no está inicializado. Verifica las etiquetas <script> de Firebase en index.html.");
     }
 
     setupEventListeners();
+    setupCollectionClicks();
     updateCartCount();
 
     // Mostrar tasa BCV inicial
     const rateElems = document.querySelectorAll('#bcv-rate-display');
     rateElems.forEach(el => el.innerText = bcvRate.toFixed(2));
-});
+}
+
+// Asegurar ejecución sin importar cómo o cuándo cargue el navegador (Móvil / Desktop)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}
 
 function setupEventListeners() {
     // Filtros y Búsqueda
@@ -89,6 +94,49 @@ function setupEventListeners() {
     document.getElementById('open-admin-btn')?.addEventListener('click', openAdminModal);
 }
 
+// Escuchar clics en tarjetas de colección para filtrar y desplazar suavemente
+function setupCollectionClicks() {
+    const selector = ".category-card, .coleccion-card, .categoria-btn, [data-categoria]";
+    const botonesColeccion = document.querySelectorAll(selector);
+
+    botonesColeccion.forEach((boton) => {
+        boton.style.cursor = "pointer";
+        boton.addEventListener("click", () => {
+            let catText = boton.dataset.categoria || boton.textContent.trim();
+            catText = catText.toLowerCase();
+
+            // Sincronizar con el select de filtros
+            const filterSelect = document.getElementById('filter-category');
+            if (filterSelect) {
+                filterSelect.value = catText;
+            }
+
+            // Aplicar el filtro visual
+            filterByCategory(catText);
+
+            // Desplazar suavemente hasta la sección de catálogo
+            const catalogoSeccion = document.querySelector("#catalogo, .catalog-section, .catalogo, #productos");
+            if (catalogoSeccion) {
+                catalogoSeccion.scrollIntoView({ behavior: "smooth" });
+            }
+        });
+    });
+}
+
+function filterByCategory(categoryName) {
+    const cleanCat = (categoryName || '').toLowerCase().trim();
+    const filterSelect = document.getElementById('filter-category');
+    if (filterSelect) filterSelect.value = cleanCat;
+
+    if (!cleanCat) {
+        renderProducts(products);
+        return;
+    }
+
+    const filtered = products.filter(p => (p.category || '').toLowerCase().trim() === cleanCat);
+    renderProducts(filtered);
+}
+
 // ==========================================
 // 3. CATÁLOGO DE PRODUCTOS (VISTA PÚBLICA)
 // ==========================================
@@ -104,13 +152,13 @@ function renderProducts(productsToRender) {
     container.innerHTML = productsToRender.map(product => {
         const hasPromo = product.isPromo && product.promoPrice > 0 && product.promoPrice < product.price;
         const activePrice = hasPromo ? product.promoPrice : product.price;
-        const prodId = product.id || product.firestoreId;
+        const prodId = product.firestoreId || product.id;
 
         return `
             <div class="product-card">
                 <div class="product-img-box" onclick="openProductModal('${prodId}')">
                     ${hasPromo ? '<span class="promo-badge">PROMO</span>' : ''}
-                    <img src="${product.image}" alt="${product.name}" class="product-img">
+                    <img src="${product.image || 'img/1001106409.jpg'}" alt="${product.name}" class="product-img">
                 </div>
                 <div class="product-info">
                     <h4 class="product-title">${product.name}</h4>
@@ -135,13 +183,13 @@ function renderProducts(productsToRender) {
 }
 
 function applyFilters() {
-    const search = document.getElementById('search-input')?.value.toLowerCase() || '';
-    const category = document.getElementById('filter-category')?.value || '';
+    const search = document.getElementById('search-input')?.value.toLowerCase().trim() || '';
+    const category = document.getElementById('filter-category')?.value.toLowerCase().trim() || '';
     const sort = document.getElementById('sort-by')?.value || 'default';
 
     let filtered = products.filter(p => {
-        const matchesSearch = p.name.toLowerCase().includes(search);
-        const matchesCategory = !category || p.category === category;
+        const matchesSearch = (p.name || '').toLowerCase().includes(search);
+        const matchesCategory = !category || (p.category || '').toLowerCase().trim() === category;
         return matchesSearch && matchesCategory;
     });
 
@@ -254,7 +302,7 @@ function renderCart() {
         const idVal = item.firestoreId || item.id;
         return `
             <div class="cart-item" style="display: flex; gap: 10px; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px;">
-                <img src="${item.image}" style="width: 45px; height: 45px; border-radius: 6px; object-fit: cover;">
+                <img src="${item.image || 'img/1001106409.jpg'}" style="width: 45px; height: 45px; border-radius: 6px; object-fit: cover;">
                 <div style="flex: 1;">
                     <h5 style="margin: 0; font-size: 0.85rem; color: var(--morado-texto);">${item.name}</h5>
                     <p style="margin: 2px 0; font-size: 0.8rem; color: var(--texto-suave);">€ ${item.price.toFixed(2)} x ${item.qty}</p>
@@ -288,7 +336,7 @@ function openProductModal(productId) {
 
     content.innerHTML = `
         <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-            <img src="${product.image}" style="width: 100%; max-width: 220px; height: 220px; border-radius: 12px; object-fit: cover; box-shadow: var(--sombra-card);">
+            <img src="${product.image || 'img/1001106409.jpg'}" style="width: 100%; max-width: 220px; height: 220px; border-radius: 12px; object-fit: cover; box-shadow: var(--sombra-card);">
             <div style="flex: 1; min-width: 200px;">
                 <h3 style="margin-top:0; color: var(--morado-texto);">${product.name}</h3>
                 <div style="margin: 10px 0;">
@@ -299,7 +347,7 @@ function openProductModal(productId) {
                         <strong style="font-size: 1.4rem; color: var(--morado-principal);">€ ${product.price.toFixed(2)}</strong>
                     `}
                 </div>
-                <p style="font-size:0.9rem; margin-bottom:5px;"><strong>Categoría:</strong> ${product.category.toUpperCase()}</p>
+                <p style="font-size:0.9rem; margin-bottom:5px;"><strong>Categoría:</strong> ${(product.category || '').toUpperCase()}</p>
                 <p style="font-size:0.9rem; margin-bottom:10px;"><strong>Disponible:</strong> ${product.stock} unidades</p>
                 <p style="color: var(--texto-suave); margin: 15px 0; font-size:0.95rem;">${product.description || 'Producto Cósmica ✨'}</p>
                 <button class="cta-button" style="width: 100%;" onclick="addToCart('${idVal}'); closeModal();" ${product.stock === 0 ? 'disabled' : ''}>
@@ -515,7 +563,7 @@ function renderAdminInventory() {
         return `
             <div class="admin-item-row" style="display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee; gap:10px;">
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <img src="${p.image}" style="width: 40px; height: 40px; border-radius: 6px; object-fit: cover; border:1px solid #eee;">
+                    <img src="${p.image || 'img/1001106409.jpg'}" style="width: 40px; height: 40px; border-radius: 6px; object-fit: cover; border:1px solid #eee;">
                     <div style="font-size: 0.85rem;">
                         <strong>${p.name}</strong> ${hasPromo ? '<span style="color:#e11d48; font-size:0.7rem; font-weight:bold; margin-left:3px;">[PROMO]</span>' : ''}<br>
                         <small style="color: var(--texto-suave);">€${p.price.toFixed(2)} | Stock: ${p.stock}</small>
@@ -545,7 +593,7 @@ function openProductForm(productId = null) {
 
         document.getElementById('prod-id').value = p.firestoreId || p.id;
         document.getElementById('prod-name').value = p.name;
-        document.getElementById('prod-cat').value = p.category;
+        document.getElementById('prod-cat').value = (p.category || 'pijamas').toLowerCase();
         document.getElementById('prod-stock').value = p.stock;
         document.getElementById('prod-price').value = p.price;
         document.getElementById('prod-promo-price').value = p.promoPrice || '';
