@@ -1175,3 +1175,115 @@ h1, h2, h3, h4, h5 {
         height: 300px;
     }
 }
+:root {
+    --morado-principal: #9b68b4;
+    --morado-oscuro: #4a254b;
+    --morado-pastel: #f3ebf5;
+    --blanco: #ffffff;
+}
+
+/* ZOOM Y GALERIA */
+.product-detail-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.gallery-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.main-img-box {
+    width: 100%;
+    height: 450px;
+    overflow: hidden;
+    border-radius: 15px;
+    cursor: zoom-in;
+    background: #f9f9f9;
+}
+
+.main-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.main-img-box:hover img {
+    transform: scale(1.6);
+}
+
+.thumbnails {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.thumbnails img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.thumbnails img.active {
+    border-color: var(--morado-principal);
+}
+
+/* SELECTOR DE TALLAS */
+.size-selector {
+    margin: 20px 0;
+}
+
+.size-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.size-btn {
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.size-btn:hover:not(.disabled) {
+    border-color: var(--morado-principal);
+}
+
+.size-btn.active {
+    background: var(--morado-principal);
+    color: white;
+    border-color: var(--morado-principal);
+}
+
+.size-btn.disabled {
+    background: #f0f0f0;
+    color: #ccc;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+
+/* NOTIFICACIONES TOAST */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--morado-oscuro);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 10000;
+    transform: translateY(100px);
+    transition: transform 0.3s;
+}
+.toast.show { transform: translateY(0); }
