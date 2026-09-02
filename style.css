@@ -88,7 +88,7 @@ body {
     box-shadow: var(--sombra); 
 }
 /* ==========================================
-    4. CATÁLOGO Y EFECTO ZOOM
+    4. CATÁLOGO Y EFECTO ZOOM (Actualizado)
    ========================================== */
 .catalog-section { padding: 30px 10px; }
 .section-title { text-align: center; margin-bottom: 25px; font-size: 1.5rem; }
@@ -102,33 +102,31 @@ body {
 
 .products-grid {
     display: grid; 
-    grid-template-columns: repeat(2, 1fr); /* SIEMPRE 2 COLUMNAS EN MÓVIL */
+    grid-template-columns: repeat(2, 1fr); 
     gap: 12px;
 }
 
 .product-card {
-    background: white; border-radius: 15px; overflow: hidden; box-shadow: var(--sombra);
-    display: flex; flex-direction: column; height: 100%;
+    background: white; 
+    border-radius: 15px; 
+    overflow: hidden; /* Esto es clave para que la foto no se salga de la tarjeta al hacer zoom */
+    box-shadow: var(--sombra);
+    display: flex; 
+    flex-direction: column; 
+    height: 100%;
 }
 
-/* --- CONTENEDOR DE LA IMAGEN CON ZOOM --- */
-.product-card .product-img-container, 
-.product-card img {
-    /* Si tu HTML usa un contenedor para la imagen, aplica el overflow ahí. 
-       Si la imagen está directa, el overflow en .product-card ya lo contiene. */
-    overflow: hidden; 
-}
-
+/* Forzamos la transición y el zoom en la imagen de la tarjeta */
 .product-card img { 
     width: 100%; 
     height: 180px; 
     object-fit: cover; 
-    transition: transform 0.4s ease-in-out; /* Controla la velocidad y suavidad del zoom */
+    transition: transform 0.4s ease !important; 
 }
 
-/* Efecto Zoom al pasar el mouse (en computadoras) */
+/* Efecto Hover: Fuerza el zoom al pasar el cursor por toda la tarjeta */
 .product-card:hover img {
-    transform: scale(1.08); /* Aumenta un 8% su tamaño de forma elegante */
+    transform: scale(1.1) !important; 
 }
 
 .product-info { padding: 10px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; }
