@@ -1,15 +1,15 @@
 // ==========================================
-// ESTADO GLOBAL
+// 1. ESTADO GLOBAL
 // ==========================================
 let products = [];
 let cart = [];
 let bcvRate = 0;
 let selectedSize = null; 
-let tempImages = ["", "", ""]; // Guarda las 3 fotos en Base64
+let tempImages = ["", "", ""]; 
 let currentOrder = null;
 
 // ==========================================
-// INICIALIZACIÓN
+// 2. INICIALIZACIÓN
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
     fetchBCVRate();
@@ -27,16 +27,17 @@ function setupEventListeners() {
     document.getElementById("filter-category")?.addEventListener("change", filterProducts);
 }
 
-// --- TASA BCV ---
+// ==========================================
+// 3. TASA BCV (Firestore + Cálculo)
+// ==========================================
 async function fetchBCVRate() {
     try {
         const doc = await db.collection("config").doc("rate").get();
         if (doc.exists) bcvRate = doc.data().bcv;
         else bcvRate = 36.5; 
-        const display = document.getElementById("bcv-rate-display");
-        if(display) display.textContent = bcvRate.toFixed(2);
-        const input = document.getElementById("admin-rate-input");
-        if(input) input.value = bcvRate;
+        
+        if(document.getElementById("bcv-rate-display")) document.getElementById("bcv-rate-display").textContent = bcvRate.toFixed(2);
+        if(document.getElementById("admin-rate-input")) document.getElementById("admin-rate-input").value = bcvRate;
     } catch (e) { bcvRate = 36.5; }
 }
 
@@ -45,12 +46,14 @@ async function saveManualRate() {
     if(newVal > 0) {
         await db.collection("config").doc("rate").set({ bcv: newVal });
         bcvRate = newVal;
-        document.getElementById("bcv-rate-display").textContent = bcvRate.toFixed(2);
         showToast("Tasa actualizada ✅");
+        setTimeout(() => location.reload(), 1000);
     }
 }
 
-// --- CARGAR PRODUCTOS ---
+// ==========================================
+// 4. CATÁLOGO DINÁMICO
+// ==========================================
 function loadProducts() {
     db.collection("products").onSnapshot(snapshot => {
         products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -80,7 +83,7 @@ function renderCatalog(items) {
 }
 
 // ==========================================
-// MODAL DE PRODUCTO (GALERÍA + TALLAS)
+// 5. DETALLE DE PRODUCTO (GALERÍA + TALLAS)
 // ==========================================
 function openProductModal(id) {
     const p = products.find(prod => prod.id === id);
@@ -99,10 +102,10 @@ function openProductModal(id) {
                 </div>
             </div>
             <div class="product-info">
-                <h2>${p.name}</h2>
-                <h3 style="color:var(--morado-principal)">€ ${p.price.toFixed(2)}</h3>
+                <h2 style="color:var(--morado-oscuro)">${p.name}</h2>
+                <h3 style="color:var(--morado-principal); margin: 10px 0;">€ ${p.price.toFixed(2)}</h3>
                 <div class="size-selector">
-                    <p><strong>Selecciona tu talla:</strong></p>
+                    <p style="margin-bottom:10px"><strong>Selecciona tu talla:</strong></p>
                     <div class="size-options">
                         ${['S', 'M', 'L', 'XL'].map(size => {
                             const stock = p.sizes[size] || 0;
@@ -112,7 +115,7 @@ function openProductModal(id) {
                         }).join('')}
                     </div>
                 </div>
-                <button class="cta-button" onclick="addToCart('${p.id}')" style="width:100%">Añadir al Carrito</button>
+                <button class="cta-button" onclick="addToCart('${p.id}')" style="margin-top:20px">Añadir al Carrito</button>
             </div>
         </div>
     `;
@@ -132,10 +135,10 @@ function selectSize(btn, size) {
 }
 
 // ==========================================
-// GESTIÓN DEL CARRITO
+// 6. CARRITO Y CHECKOUT
 // ==========================================
 function addToCart(id) {
-    if (!selectedSize) { showToast("⚠️ Elige una talla", "error"); return; }
+    if (!selectedSize) { showToast("⚠️ Selecciona una talla", "error"); return; }
     const p = products.find(prod => prod.id === id);
     const cartItemId = id + "_" + selectedSize;
     const existing = cart.find(item => item.cartItemId === cartItemId);
@@ -149,6 +152,7 @@ function addToCart(id) {
     updateCartUI();
     showToast("¡Añadido! ✨");
     closeProductModal();
+    openCart();
 }
 
 function updateCartUI() {
@@ -158,13 +162,14 @@ function updateCartUI() {
     cart.forEach(item => {
         total += (item.price * item.qty);
         container.innerHTML += `
-            <div class="cart-item" style="display:flex; gap:10px; margin-bottom:10px; align-items:center;">
-                <img src="${item.images.find(img => img !== "")}" style="width:50px; height:50px; object-fit:cover; border-radius:5px;">
+            <div style="display:flex; gap:15px; margin-bottom:15px; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px;">
+                <img src="${item.images.find(img => img !== "")}" style="width:60px; height:60px; object-fit:cover; border-radius:10px;">
                 <div style="flex:1">
                     <h5 style="margin:0">${item.name}</h5>
                     <small>Talla: ${item.selectedSize} | Cant: ${item.qty}</small>
                 </div>
                 <strong>€ ${(item.price * item.qty).toFixed(2)}</strong>
+                <button onclick="removeFromCart('${item.cartItemId}')" style="background:none; border:none; color:red; cursor:pointer; font-size:1.2rem;">&times;</button>
             </div>
         `;
     });
@@ -172,11 +177,13 @@ function updateCartUI() {
     document.getElementById("cart-count").textContent = cart.reduce((acc, i) => acc + i.qty, 0);
 }
 
-// ==========================================
-// PROCESO DE CHECKOUT (PASOS)
-// ==========================================
+function removeFromCart(cartId) {
+    cart = cart.filter(i => i.cartItemId !== cartId);
+    updateCartUI();
+}
+
 function openCheckoutModal() {
-    if(cart.length === 0) return showToast("Carrito vacío");
+    if(cart.length === 0) return showToast("El carrito está vacío");
     closeCart();
     const totalEur = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
     document.getElementById("checkout-total-eur").textContent = `€ ${totalEur.toFixed(2)}`;
@@ -206,7 +213,6 @@ async function processOrder(e) {
 async function registerPayment(e) {
     e.preventDefault();
     currentOrder.paymentRef = document.getElementById("payment-ref").value;
-    
     try {
         await db.collection("orders").add(currentOrder);
         // Descontar Stock
@@ -239,14 +245,15 @@ function sendWhatsAppSummary() {
     msg += `%0A💶 *Total:* €${currentOrder.totalEur.toFixed(2)}%0A`;
     msg += `🇻🇪 *Monto:* ${totalVes} Bs.%0A`;
     msg += `🔢 *Referencia:* ${currentOrder.paymentRef}%0A%0A`;
-    msg += `Pagaré por Pago Móvil. ¡Espero confirmación! ✨`;
+    msg += `Pagaré por Pago Móvil. ✨`;
 
-    window.open(`https://wa.me/584221727585?text=${msg}`, "_blank");
+    window.open(`https://wa.me/584121727585?text=${msg}`, "_blank");
 }
 
 // ==========================================
-// ADMINISTRACIÓN
+// 7. ADMINISTRACIÓN (Editar + Ventas Manuales)
 // ==========================================
+
 async function handleAdminLogin(e) {
     e.preventDefault();
     const passInput = document.getElementById("admin-pass").value;
@@ -264,58 +271,54 @@ function switchAdminTab(tab) {
     document.querySelectorAll(".admin-tab-content").forEach(c => c.style.display = "none");
     document.querySelectorAll(".admin-tab-btn").forEach(b => b.classList.remove("active"));
     document.getElementById(`tab-${tab}`).style.display = "block";
+    
+    // Activar el botón visualmente
     const btn = document.querySelector(`button[onclick*="${tab}"]`);
     if(btn) btn.classList.add("active");
+
     if(tab === 'sales') loadAdminSales();
 }
+
+// --- GESTIÓN DE INVENTARIO ---
 
 function loadAdminInventory() {
     const list = document.getElementById("admin-inventory-list");
     if(!list) return;
     list.innerHTML = products.map(p => `
-        <div class="admin-item-row" style="display:flex; justify-content:space-between; margin-bottom:10px; background:#fff; padding:10px; border-radius:8px; color:#333;">
-            <span>${p.name} (S:${p.sizes.S} M:${p.sizes.M} L:${p.sizes.L} XL:${p.sizes.XL})</span>
-            <button onclick="deleteProduct('${p.id}')" style="color:red; border:none; background:none; cursor:pointer; font-weight:bold;">Eliminar</button>
+        <div style="display:flex; justify-content:space-between; background:#fff; padding:12px; margin-bottom:10px; border-radius:12px; color:#333; align-items:center; border:1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <div><strong>${p.name}</strong><br><small>S:${p.sizes.S} M:${p.sizes.M} L:${p.sizes.L} XL:${p.sizes.XL}</small></div>
+            <div style="display:flex; gap:10px;">
+                <button onclick="editProduct('${p.id}')" style="color:var(--morado-principal); background:none; border:none; cursor:pointer; font-weight:bold;">Editar</button>
+                <button onclick="deleteProduct('${p.id}')" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">Eliminar</button>
+            </div>
         </div>
     `).join('');
 }
 
-async function deleteProduct(id) {
-    if(confirm("¿Eliminar producto?")) await db.collection("products").doc(id).delete();
-}
+function editProduct(id) {
+    const p = products.find(prod => prod.id === id);
+    if(!p) return;
 
-function loadAdminSales() {
-    db.collection("orders").orderBy("date", "desc").onSnapshot(snapshot => {
-        const sales = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        document.getElementById("stat-total-sales").textContent = sales.length;
-        const total = sales.reduce((acc, s) => acc + s.totalEur, 0);
-        document.getElementById("stat-total-eur").textContent = `€ ${total.toFixed(2)}`;
-        document.getElementById("admin-sales-list").innerHTML = sales.map(s => `
-            <div style="background:#fff; padding:10px; margin-bottom:5px; border-radius:8px; color:#333; display:flex; justify-content:space-between;">
-                <div><strong>${s.clientName}</strong><br><small>${s.orderNumber} - €${s.totalEur.toFixed(2)}</small></div>
-                <button onclick="deleteOrder('${s.id}')" style="border:none; background:none; color:red; cursor:pointer;">🗑️</button>
-            </div>
-        `).join('');
-    });
-}
-
-async function deleteOrder(id) {
-    if(confirm("¿Borrar registro de venta?")) await db.collection("orders").doc(id).delete();
-}
-
-// --- FOTOS Y GUARDAR PRODUCTO ---
-function previewImg(input, index) {
-    const file = input.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => { tempImages[index - 1] = e.target.result; };
-    reader.readAsDataURL(file);
+    // Llenar formulario
+    document.getElementById("edit-prod-id").value = p.id;
+    document.getElementById("prod-name").value = p.name;
+    document.getElementById("prod-cat").value = p.category;
+    document.getElementById("prod-price").value = p.price;
+    document.getElementById("stock-s").value = p.sizes.S || 0;
+    document.getElementById("stock-m").value = p.sizes.M || 0;
+    document.getElementById("stock-l").value = p.sizes.L || 0;
+    document.getElementById("stock-xl").value = p.sizes.XL || 0;
+    
+    document.getElementById("form-title").textContent = "Editando Producto";
+    document.getElementById("product-form-box").style.display = "block";
+    tempImages = [...p.images]; // Mantener imágenes actuales
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 async function saveProduct(e) {
     e.preventDefault();
+    const id = document.getElementById("edit-prod-id").value;
     const priceVal = document.getElementById("prod-price").value;
-    if(!priceVal) return showToast("⚠️ Ponle un precio", "error");
 
     const pData = {
         name: document.getElementById("prod-name").value,
@@ -332,17 +335,103 @@ async function saveProduct(e) {
     };
 
     try {
-        await db.collection("products").add(pData);
-        showToast("✅ ¡Publicado!");
-        document.getElementById("product-form-box").style.display = "none";
+        if(id) {
+            await db.collection("products").doc(id).update(pData);
+            showToast("✅ Actualizado");
+        } else {
+            await db.collection("products").add(pData);
+            showToast("✅ Publicado");
+        }
+        closeProductForm();
         e.target.reset();
-        tempImages = ["", "", ""];
-    } catch (err) { showToast("❌ Error al guardar"); }
+    } catch (err) { showToast("❌ Error"); }
+}
+
+function closeProductForm() {
+    document.getElementById("product-form-box").style.display = "none";
+    document.getElementById("edit-prod-id").value = "";
+    document.getElementById("form-title").textContent = "Crear Nuevo Producto";
+    tempImages = ["", "", ""];
+}
+
+async function deleteProduct(id) {
+    if(confirm("¿Eliminar producto definitivamente?")) await db.collection("products").doc(id).delete();
+}
+
+// --- GESTIÓN DE VENTAS ---
+
+function loadAdminSales() {
+    db.collection("orders").orderBy("date", "desc").onSnapshot(snapshot => {
+        const sales = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        document.getElementById("stat-total-sales").textContent = sales.length;
+        const total = sales.reduce((acc, s) => acc + s.totalEur, 0);
+        document.getElementById("stat-total-eur").textContent = `€ ${total.toFixed(2)}`;
+        
+        document.getElementById("admin-sales-list").innerHTML = sales.map(s => `
+            <div style="background:#fff; padding:12px; margin-bottom:10px; border-radius:12px; color:#333; display:flex; justify-content:space-between; border:1px solid #ddd;">
+                <div>
+                    <strong>${s.clientName}</strong><br>
+                    <small>${s.orderNumber} - €${s.totalEur.toFixed(2)} - ${s.paymentStatus}</small>
+                </div>
+                <button onclick="deleteOrder('${s.id}')" style="color:red; background:none; border:none; cursor:pointer;">🗑️</button>
+            </div>
+        `).join('');
+    });
+}
+
+function openManualSaleForm() {
+    const select = document.getElementById("manual-prod-select");
+    select.innerHTML = products.map(p => `<option value="${p.id}">${p.name} (€${p.price})</option>`).join('');
+    document.getElementById("manual-sale-box").style.display = "block";
+}
+
+async function saveManualSale(e) {
+    e.preventDefault();
+    const prodId = document.getElementById("manual-prod-select").value;
+    const size = document.getElementById("manual-size-select").value;
+    const qty = parseInt(document.getElementById("manual-qty").value);
+    const p = products.find(prod => prod.id === prodId);
+
+    const manualOrder = {
+        orderNumber: "MANUAL-" + Date.now().toString().slice(-4),
+        clientName: document.getElementById("manual-client").value + " (Manual)",
+        totalEur: p.price * qty,
+        paymentStatus: "Pagado",
+        date: new Date().toISOString(),
+        items: [{ name: p.name, selectedSize: size, qty: qty, price: p.price }]
+    };
+
+    try {
+        await db.collection("orders").add(manualOrder);
+        // Descontar stock
+        const pRef = db.collection("products").doc(prodId);
+        const pDoc = await pRef.get();
+        const newSizes = {...pDoc.data().sizes};
+        newSizes[size] = Math.max(0, newSizes[size] - qty);
+        await pRef.update({ sizes: newSizes });
+
+        showToast("✅ Venta manual registrada");
+        document.getElementById("manual-sale-box").style.display = "none";
+        e.target.reset();
+    } catch (err) { showToast("❌ Error"); }
+}
+
+async function deleteOrder(id) {
+    if(confirm("¿Borrar registro de venta?")) await db.collection("orders").doc(id).delete();
 }
 
 // ==========================================
-// UTILIDADES
+// 8. UTILIDADES Y OTROS
 // ==========================================
+
+function previewImg(input, index) {
+    const file = input.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => { tempImages[index - 1] = e.target.result; };
+    reader.readAsDataURL(file);
+}
+
 function filterProducts() {
     const search = document.getElementById("search-input").value.toLowerCase();
     const cat = document.getElementById("filter-category").value;
