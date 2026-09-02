@@ -26,12 +26,12 @@ body {
 .navbar {
     display: flex; justify-content: space-between; align-items: center;
     padding: 10px 5%; background: var(--morado-p);
-    color: white; position: sticky; top: 0; z-index: 1000;
+    color:rgb(97, 14, 117); position: sticky; top: 0; z-index: 1000;
 }
 
 .logo h1 { font-size: 1.2rem; letter-spacing: 2px; }
 
-.nav-links { display: none; } /* Ocultos en móvil por defecto */
+.nav-links { display: none; colo:rgba(0, 0, 0, 0.829); } /* Ocultos en móvil por defecto */
 
 .nav-icons { display: flex; gap: 15px; align-items: center; }
 
