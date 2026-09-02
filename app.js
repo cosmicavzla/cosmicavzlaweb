@@ -241,7 +241,7 @@ function sendWhatsAppSummary() {
     msg += `🔢 *Referencia:* ${currentOrder.paymentRef}%0A%0A`;
     msg += `Pagaré por Pago Móvil. ¡Espero confirmación! ✨`;
 
-    window.open(`https://wa.me/584121727585?text=${msg}`, "_blank");
+    window.open(`https://wa.me/584221727585?text=${msg}`, "_blank");
 }
 
 // ==========================================
