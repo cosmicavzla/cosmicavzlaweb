@@ -88,7 +88,7 @@ body {
     box-shadow: var(--sombra); 
 }
 /* ==========================================
-    4. CATÁLOGO Y EFECTO ZOOM (Actualizado)
+    4. CATÁLOGO Y EFECTO ZOOM (Forzado)
    ========================================== */
 .catalog-section { padding: 30px 10px; }
 .section-title { text-align: center; margin-bottom: 25px; font-size: 1.5rem; }
@@ -109,30 +109,41 @@ body {
 .product-card {
     background: white; 
     border-radius: 15px; 
-    overflow: hidden; /* Esto es clave para que la foto no se salga de la tarjeta al hacer zoom */
+    overflow: hidden !important; /* Mantiene la foto dentro del borde redondeado */
     box-shadow: var(--sombra);
     display: flex; 
     flex-direction: column; 
     height: 100%;
 }
 
-/* Forzamos la transición y el zoom en la imagen de la tarjeta */
-.product-card img { 
-    width: 100%; 
-    height: 180px; 
-    object-fit: cover; 
-    transition: transform 0.4s ease !important; 
+/* Selector amplio para asegurar que tome la imagen sin importar el contenedor de JS */
+.product-card img,
+.product-card div img,
+.product-card a img {
+    width: 100% !important;
+    height: 180px !important;
+    object-fit: cover !important;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Efecto Hover: Fuerza el zoom al pasar el cursor por toda la tarjeta */
-.product-card:hover img {
-    transform: scale(1.1) !important; 
+/* Efecto Hover al pasar el mouse por la tarjeta */
+.product-card:hover img,
+.product-card:hover div img,
+.product-card:hover a img {
+    transform: scale(1.1) !important;
 }
 
 .product-info { padding: 10px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; }
 .product-title { font-size: 0.85rem; font-weight: 600; height: 35px; overflow: hidden; }
 .product-price { color: var(--morado-p); font-weight: 800; font-size: 1rem; margin-top: 5px; }
 
+@media (min-width: 769px) {
+    .product-card img,
+    .product-card div img,
+    .product-card a img {
+        height: 320px !important; /* Tamaño mayor para computadoras */
+    }
+}
 /* ==========================================
     5. MODAL DE PRODUCTO (CORRECCIÓN CRÍTICA)
    ========================================== */
