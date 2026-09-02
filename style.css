@@ -88,62 +88,56 @@ body {
     box-shadow: var(--sombra); 
 }
 /* ==========================================
-    4. CATÁLOGO Y EFECTO ZOOM (Forzado)
+
+   4. CATÁLOGO (2 Columnas perfectas)
+
    ========================================== */
+
 .catalog-section { padding: 30px 10px; }
+
 .section-title { text-align: center; margin-bottom: 25px; font-size: 1.5rem; }
 
+
+
 .filters-bar { display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; }
-.search-box { width: 100%; }
+
 .search-box input, .select-filters select {
+
     width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd;
+
 }
-.select-filters { width: 100%; }
+
+
 
 .products-grid {
+
     display: grid; 
-    grid-template-columns: repeat(2, 1fr); 
+
+    grid-template-columns: repeat(2, 1fr); /* SIEMPRE 2 COLUMNAS EN MÓVIL */
+
     gap: 12px;
+
 }
+
+
 
 .product-card {
-    background: white; 
-    border-radius: 15px; 
-    overflow: hidden !important; /* Mantiene la foto dentro del borde redondeado */
-    box-shadow: var(--sombra);
-    display: flex; 
-    flex-direction: column; 
-    height: 100%;
+
+    background: white; border-radius: 15px; overflow: hidden; box-shadow: var(--sombra);
+
 }
 
-/* Selector amplio para asegurar que tome la imagen sin importar el contenedor de JS */
-.product-card img,
-.product-card div img,
-.product-card a img {
-    width: 100% !important;
-    height: 180px !important;
-    object-fit: cover !important;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
 
-/* Efecto Hover al pasar el mouse por la tarjeta */
-.product-card:hover img,
-.product-card:hover div img,
-.product-card:hover a img {
-    transform: scale(1.1) !important;
-}
 
-.product-info { padding: 10px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; }
+.product-card img { width: 100%; height: 180px; object-fit: cover; }
+
+.product-info { padding: 10px; text-align: center; }
+
 .product-title { font-size: 0.85rem; font-weight: 600; height: 35px; overflow: hidden; }
-.product-price { color: var(--morado-p); font-weight: 800; font-size: 1rem; margin-top: 5px; }
 
-@media (min-width: 769px) {
-    .product-card img,
-    .product-card div img,
-    .product-card a img {
-        height: 320px !important; /* Tamaño mayor para computadoras */
-    }
-}
+.product-price { color: var(--morado-p); font-weight: 800; font-size: 1rem; }
+
+
 /* ==========================================
     5. MODAL DE PRODUCTO (CORRECCIÓN CRÍTICA)
    ========================================== */
