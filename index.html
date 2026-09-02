@@ -222,7 +222,7 @@
                     </div>
                     <div class="form-group">
                         <label for="payment-ref">Número de Referencia (Últimos 6 dígitos) *</label>
-                        <input type="text" id="payment-ref" required placeholder="Ej. 123456" maxlength="6">
+                        <input type="tel" id="payment-ref" inputmode="numeric" pattern="[0-9]{6}" required placeholder="Ej. 123456" maxlength="6">
                     </div>
                     <button type="submit" class="cta-button btn-full-width">
                         Confirmar Pago en la Web
@@ -489,10 +489,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-    <!-- INICIALIZACIÓN DE FIREBASE -->
+    <!-- INICIALIZACIÓN DE FIREBASE (Asegúrate de restringir tu clave en la consola de GCP) -->
     <script>
       const firebaseConfig = {
-        apiKey: "AIzaSyCoG8XuSTmdRq75XtZ4z6XA8BlkIh51N5g",
+        apiKey: "REPLACE_WITH_YOUR_RESTRICTED_API_KEY",
         authDomain: "cosmica-tienda.firebaseapp.com",
         projectId: "cosmica-tienda",
         storageBucket: "cosmica-tienda.firebasestorage.app",
@@ -501,10 +501,7 @@
         measurementId: "G-7V2EMNDE9Q"
       };
 
-      // Inicializar Firebase
       firebase.initializeApp(firebaseConfig);
-      
-      // Variable global `db` para app.js
       const db = firebase.firestore();
     </script>
 
