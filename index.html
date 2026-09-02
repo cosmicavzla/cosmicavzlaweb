@@ -86,10 +86,12 @@
         </div>
     </aside>
 
-    <!-- CHECKOUT -->
+    <!-- CHECKOUT REVISADO -->
     <div class="modal-overlay" id="checkout-modal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeCheckoutModal()">&times;</button>
+            
+            <!-- Paso 1: Datos -->
             <div id="checkout-step-1">
                 <h3>Datos del Pedido</h3>
                 <form id="checkout-form" onsubmit="processOrder(event)">
@@ -99,20 +101,35 @@
                     <button type="submit" class="cta-button" style="width:100%">Confirmar Pedido</button>
                 </form>
             </div>
+
+            <!-- Paso 2: Pago Móvil con DATOS BANCARIOS -->
             <div id="checkout-step-2" style="display:none; text-align:center;">
                 <h3>Pago Móvil</h3>
-                <div class="bcv-box">
-                    <p>Tasa BCV: <span id="bcv-rate-display">0.00</span> Bs/€</p>
-                    <h4 id="checkout-total-ves">Total: 0.00 Bs.</h4>
+                <div class="bcv-box" style="background: #fdf4ff; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #d8b4fe;">
+                    <p style="margin:0;">Tasa BCV: <span id="bcv-rate-display">0.00</span> Bs/€</p>
+                    <h4 id="checkout-total-ves" style="margin:5px 0; color: #6b21a8;">Total: 0.00 Bs.</h4>
                 </div>
+                
+                <div class="bank-details" style="text-align: left; background: #f9f9f9; padding: 15px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 15px; font-size: 0.9rem;">
+                    <p><strong>Banco:</strong> Venezolano de Crédito (0104)</p>
+                    <p><strong>Teléfono:</strong> 0416-1727585</p>
+                    <p><strong>Cédula/RIF:</strong> V-28469015</p>
+                </div>
+
                 <form onsubmit="registerPayment(event)">
-                    <input type="text" id="payment-ref" placeholder="Referencia (6 dígitos)" required maxlength="6">
+                    <input type="text" id="payment-ref" placeholder="Referencia (6 dígitos)" required maxlength="6" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
                     <button type="submit" class="cta-button" style="width:100%; margin-top:10px;">Reportar Pago</button>
                 </form>
             </div>
+
+            <!-- Paso 3: Éxito con Botón de WhatsApp -->
             <div id="checkout-step-3" style="display:none; text-align:center;">
-                <div class="success-icon">🎉</div><h3>¡Pago Registrado!</h3>
-                <button class="cta-button" style="background:#25D366" onclick="sendWhatsAppSummary()">Enviar comprobante</button>
+                <div class="success-icon" style="font-size: 3rem; margin-bottom: 10px;">🎉</div>
+                <h3>¡Pago Registrado!</h3>
+                <p style="margin-bottom: 20px;">Pedido: <strong id="final-order-num"></strong></p>
+                <button class="cta-button" style="background:#25D366; width: 100%;" onclick="sendWhatsAppSummary()">
+                    📲 Confirmar por WhatsApp
+                </button>
             </div>
         </div>
     </div>
@@ -122,7 +139,6 @@
         <div class="modal-content modal-large">
             <button class="close-modal" onclick="closeAdminModal()">&times;</button>
             
-            <!-- Login -->
             <div id="admin-login-view">
                 <h3 style="text-align:center">🔐 Acceso Admin</h3>
                 <form onsubmit="handleAdminLogin(event)">
@@ -131,7 +147,6 @@
                 </form>
             </div>
 
-            <!-- Dashboard -->
             <div id="admin-dashboard-view" style="display:none;">
                 <div class="admin-tabs" style="display:flex; gap:10px; margin-bottom:20px; border-bottom:1px solid #ddd; padding-bottom:10px;">
                     <button onclick="switchAdminTab('products')" class="admin-tab-btn active">📦 Inventario</button>
@@ -140,82 +155,66 @@
                     <button onclick="adminLogout()" class="btn-danger" style="margin-left:auto">Salir</button>
                 </div>
 
-                <!-- Pestaña Inventario -->
-                <!-- Pestaña Inventario CORREGIDA -->
-<div id="tab-products" class="admin-tab-content">
-    <button onclick="openProductForm()" class="btn-primary">+ Nuevo Producto</button>
-    
-    <!-- Formulario Limpio -->
-    <div id="product-form-box" class="admin-form-box" style="display:none; margin-top:15px; background:#f9f9f9; padding:20px; border-radius:10px; border:1px solid #ddd; color: #333;">
-        <form onsubmit="saveProduct(event)">
-            <h4 style="margin-bottom:15px; color: #4a254b;">Crear Nuevo Producto</h4>
-            
-            <div class="form-group">
-                <label>Nombre del Producto:</label>
-                <input type="text" id="prod-name" placeholder="Ej: Pijama Lisboa" required style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; margin-bottom:10px;">
-            </div>
-
-            <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <div style="flex:1">
-                    <label>Categoría:</label>
-                    <select id="prod-cat" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
-                        <option value="pijamas">Pijamas</option>
-                        <option value="lenceria">Lencería</option>
-                        <option value="sets">Sets</option>
-                        <option value="accesorios">Accesorios</option>
-                    </select>
+                <div id="tab-products" class="admin-tab-content">
+                    <button onclick="openProductForm()" class="btn-primary">+ Nuevo Producto</button>
+                    <div id="product-form-box" class="admin-form-box" style="display:none; margin-top:15px; background:#f9f9f9; padding:20px; border-radius:10px; border:1px solid #ddd;">
+                        <form onsubmit="saveProduct(event)">
+                            <div class="form-group">
+                                <label>Nombre del Producto:</label>
+                                <input type="text" id="prod-name" placeholder="Ej: Pijama Lisboa" required style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; margin-bottom:10px;">
+                            </div>
+                            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                                <div style="flex:1">
+                                    <label>Categoría:</label>
+                                    <select id="prod-cat" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                                        <option value="pijamas">Pijamas</option>
+                                        <option value="lenceria">Lencería</option>
+                                        <option value="sets">Sets</option>
+                                        <option value="accesorios">Accesorios</option>
+                                    </select>
+                                </div>
+                                <div style="flex:1">
+                                    <label>Precio (€):</label>
+                                    <input type="number" id="prod-price" step="0.01" placeholder="0.00" required style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                            </div>
+                            <div class="admin-sizes" style="background: #eee; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                                <label>Stock por talla:</label><br>
+                                S: <input type="number" id="stock-s" value="0" style="width:45px">
+                                M: <input type="number" id="stock-m" value="0" style="width:45px">
+                                L: <input type="number" id="stock-l" value="0" style="width:45px">
+                                XL: <input type="number" id="stock-xl" value="0" style="width:45px">
+                            </div>
+                            <div class="admin-photos">
+                                <label>Fotos (3):</label><br>
+                                <input type="file" onchange="previewImg(this, 1)">
+                                <input type="file" onchange="previewImg(this, 2)">
+                                <input type="file" onchange="previewImg(this, 3)">
+                            </div>
+                            <button type="submit" class="btn-save" style="width:100%; margin-top:10px;">Publicar Producto</button>
+                        </form>
+                    </div>
+                    <div id="admin-inventory-list" style="margin-top:20px;"></div>
                 </div>
-                <div style="flex:1">
-                    <label>Precio (€):</label>
-                    <input type="number" id="prod-price" step="0.01" placeholder="0.00" required style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
-                </div>
-            </div>
 
-            <div class="admin-sizes" style="background: #eee; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
-                <label><strong>Stock por talla:</strong></label><br>
-                S: <input type="number" id="stock-s" value="0" style="width:50px; margin-right:5px;">
-                M: <input type="number" id="stock-m" value="0" style="width:50px; margin-right:5px;">
-                L: <input type="number" id="stock-l" value="0" style="width:50px; margin-right:5px;">
-                XL: <input type="number" id="stock-xl" value="0" style="width:50px;">
-            </div>
-
-            <div class="admin-photos">
-                <label>Fotos (3 recomendadas):</label><br>
-                <input type="file" onchange="previewImg(this, 1)" style="margin-bottom:5px; font-size: 0.8rem;">
-                <input type="file" onchange="previewImg(this, 2)" style="margin-bottom:5px; font-size: 0.8rem;">
-                <input type="file" onchange="previewImg(this, 3)" style="font-size: 0.8rem;">
-            </div>
-
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <button type="submit" class="btn-save" style="flex:2; padding:12px; background:#4a254b; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">Publicar Producto</button>
-                <button type="button" onclick="document.getElementById('product-form-box').style.display='none'" style="flex:1; background:#ccc; border:none; border-radius:8px; cursor:pointer;">Cancelar</button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Lista de productos cargados -->
-    <div id="admin-inventory-list" style="margin-top:20px;"></div>
-</div>
-                <!-- Pestaña Ventas -->
                 <div id="tab-sales" class="admin-tab-content" style="display:none;">
                     <div style="display:flex; gap:15px; margin-bottom:15px;">
-                        <div class="stat-card" style="background:white; padding:15px; border-radius:10px; flex:1; border:1px solid #ddd;">Ventas: <strong id="stat-total-sales">0</strong></div>
-                        <div class="stat-card" style="background:white; padding:15px; border-radius:10px; flex:1; border:1px solid #ddd;">Ingresos: <strong id="stat-total-eur">€ 0.00</strong></div>
+                        <div class="stat-card">Ventas: <strong id="stat-total-sales">0</strong></div>
+                        <div class="stat-card">Ingresos: <strong id="stat-total-eur">€ 0.00</strong></div>
                     </div>
                     <div id="admin-sales-list"></div>
                 </div>
 
-                <!-- Pestaña Tasa -->
                 <div id="tab-rate" class="admin-tab-content" style="display:none;">
                     <div style="background:white; padding:20px; border-radius:10px; border:1px solid #ddd;">
                         <label>Nueva Tasa BCV (Bs/€):</label>
-                        <input type="number" id="admin-rate-input" step="0.01" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px;">
+                        <input type="number" id="admin-rate-input" step="0.01" style="width:100%; padding:10px; margin:10px 0;">
                         <button onclick="saveManualRate()" class="cta-button" style="width:100%">Actualizar Tasa</button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </header>
 
     <footer class="footer"><p>© 2026 CÓSMICA | Tu brillo es universal ✨</p></footer>
 
