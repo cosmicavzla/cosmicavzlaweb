@@ -141,53 +141,61 @@
                 </div>
 
                 <!-- Pestaña Inventario -->
-                <div id="tab-products" class="admin-tab-content">
-                    <button onclick="openProductForm()" class="btn-primary">+ Nuevo Producto</button>
-                    
-                    <div id="product-form-box" class="admin-form-box" style="display:none; margin-top:15px; background:#f9f9f9; padding:15px; border-radius:10px; border:1px solid #ddd;">
-                        <form onsubmit="saveProduct(event)">
-                            <div class="form-group">
-                                <label>Nombre del Producto:</label>
-                                <input type="text" id="prod-name" placeholder="Ej: Pijama Lisboa" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc;">
-                            </div>
+                <!-- Pestaña Inventario CORREGIDA -->
+<div id="tab-products" class="admin-tab-content">
+    <button onclick="openProductForm()" class="btn-primary">+ Nuevo Producto</button>
+    
+    <!-- Formulario Limpio -->
+    <div id="product-form-box" class="admin-form-box" style="display:none; margin-top:15px; background:#f9f9f9; padding:20px; border-radius:10px; border:1px solid #ddd; color: #333;">
+        <form onsubmit="saveProduct(event)">
+            <h4 style="margin-bottom:15px; color: #4a254b;">Crear Nuevo Producto</h4>
+            
+            <div class="form-group">
+                <label>Nombre del Producto:</label>
+                <input type="text" id="prod-name" placeholder="Ej: Pijama Lisboa" required style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; margin-bottom:10px;">
+            </div>
 
-                            <div style="display:flex; gap:10px; margin:10px 0;">
-                                <div style="flex:1">
-                                    <label>Categoría:</label>
-                                    <select id="prod-cat" style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc;">
-                                        <option value="pijamas">Pijamas</option>
-                                        <option value="lenceria">Lencería</option>
-                                        <option value="sets">Sets</option>
-                                        <option value="accesorios">Accesorios</option>
-                                    </select>
-                                </div>
-                                <div style="flex:1">
-                                    <label>Precio (€):</label>
-                                    <input type="number" id="prod-price" step="0.01" placeholder="0.00" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc;">
-                                </div>
-                            </div>
-
-                            <div class="admin-sizes" style="margin-bottom:15px;">
-                                <label>Stock por talla:</label><br>
-                                S: <input type="number" id="stock-s" value="0" style="width:45px">
-                                M: <input type="number" id="stock-m" value="0" style="width:45px">
-                                L: <input type="number" id="stock-l" value="0" style="width:45px">
-                                XL: <input type="number" id="stock-xl" value="0" style="width:45px">
-                            </div>
-
-                            <div class="admin-photos">
-                                <label>Fotos (3 recomendadas):</label><br>
-                                <input type="file" onchange="previewImg(this, 1)" style="margin-bottom:5px;">
-                                <input type="file" onchange="previewImg(this, 2)" style="margin-bottom:5px;">
-                                <input type="file" onchange="previewImg(this, 3)">
-                            </div>
-
-                            <button type="submit" class="btn-save" style="width:100%; margin-top:15px; padding:12px; background: #4a254b; color: white; border: none; border-radius: 8px; cursor: pointer;">Publicar Producto</button>
-                        </form>
-                    </div>
-                    <div id="admin-inventory-list" style="margin-top:20px;"></div>
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <div style="flex:1">
+                    <label>Categoría:</label>
+                    <select id="prod-cat" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                        <option value="pijamas">Pijamas</option>
+                        <option value="lenceria">Lencería</option>
+                        <option value="sets">Sets</option>
+                        <option value="accesorios">Accesorios</option>
+                    </select>
                 </div>
+                <div style="flex:1">
+                    <label>Precio (€):</label>
+                    <input type="number" id="prod-price" step="0.01" placeholder="0.00" required style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                </div>
+            </div>
 
+            <div class="admin-sizes" style="background: #eee; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                <label><strong>Stock por talla:</strong></label><br>
+                S: <input type="number" id="stock-s" value="0" style="width:50px; margin-right:5px;">
+                M: <input type="number" id="stock-m" value="0" style="width:50px; margin-right:5px;">
+                L: <input type="number" id="stock-l" value="0" style="width:50px; margin-right:5px;">
+                XL: <input type="number" id="stock-xl" value="0" style="width:50px;">
+            </div>
+
+            <div class="admin-photos">
+                <label>Fotos (3 recomendadas):</label><br>
+                <input type="file" onchange="previewImg(this, 1)" style="margin-bottom:5px; font-size: 0.8rem;">
+                <input type="file" onchange="previewImg(this, 2)" style="margin-bottom:5px; font-size: 0.8rem;">
+                <input type="file" onchange="previewImg(this, 3)" style="font-size: 0.8rem;">
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button type="submit" class="btn-save" style="flex:2; padding:12px; background:#4a254b; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">Publicar Producto</button>
+                <button type="button" onclick="document.getElementById('product-form-box').style.display='none'" style="flex:1; background:#ccc; border:none; border-radius:8px; cursor:pointer;">Cancelar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Lista de productos cargados -->
+    <div id="admin-inventory-list" style="margin-top:20px;"></div>
+</div>
                 <!-- Pestaña Ventas -->
                 <div id="tab-sales" class="admin-tab-content" style="display:none;">
                     <div style="display:flex; gap:15px; margin-bottom:15px;">
