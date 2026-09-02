@@ -49,19 +49,19 @@
                 </div>
                 <div class="select-filters">
                     <select id="filter-category">
-                    <option value="">Todas las categorías</option>
-                    <option value="pijamas">Pijamas</option>
-                    <option value="lenceria">Lencería</option>
-                    <option value="sets">Sets</option>
-                     <option value="accesorios">Accesorios</option>
-                </select>
+                        <option value="">Todas las categorías</option>
+                        <option value="pijamas">Pijamas</option>
+                        <option value="lenceria">Lencería</option>
+                        <option value="sets">Sets</option>
+                        <option value="accesorios">Accesorios</option>
+                    </select>
                 </div>
             </div>
             <div class="products-grid" id="products-container"></div>
         </section>
     </main>
 
-    <!-- MODAL DE PRODUCTO (GALERÍA + TALLAS) -->
+    <!-- MODAL DE PRODUCTO -->
     <div class="modal-overlay" id="product-modal">
         <div class="modal-content modal-large">
             <button class="close-modal" onclick="closeProductModal()">&times;</button>
@@ -69,7 +69,7 @@
         </div>
     </div>
 
-    <!-- CARRITO LATERAL -->
+    <!-- CARRITO -->
     <div class="cart-drawer-overlay" id="cart-drawer-overlay"></div>
     <aside class="cart-drawer" id="cart-drawer">
         <div class="cart-header">
@@ -86,7 +86,7 @@
         </div>
     </aside>
 
-    <!-- MODAL DE CHECKOUT -->
+    <!-- CHECKOUT -->
     <div class="modal-overlay" id="checkout-modal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeCheckoutModal()">&times;</button>
@@ -101,7 +101,10 @@
             </div>
             <div id="checkout-step-2" style="display:none; text-align:center;">
                 <h3>Pago Móvil</h3>
-                <div class="bcv-box"><p>Tasa BCV: <span id="bcv-rate-display">0.00</span> Bs/€</p><h4 id="checkout-total-ves">Total: 0.00 Bs.</h4></div>
+                <div class="bcv-box">
+                    <p>Tasa BCV: <span id="bcv-rate-display">0.00</span> Bs/€</p>
+                    <h4 id="checkout-total-ves">Total: 0.00 Bs.</h4>
+                </div>
                 <form onsubmit="registerPayment(event)">
                     <input type="text" id="payment-ref" placeholder="Referencia (6 dígitos)" required maxlength="6">
                     <button type="submit" class="cta-button" style="width:100%; margin-top:10px;">Reportar Pago</button>
@@ -109,26 +112,27 @@
             </div>
             <div id="checkout-step-3" style="display:none; text-align:center;">
                 <div class="success-icon">🎉</div><h3>¡Pago Registrado!</h3>
-                <button class="cta-button" style="background:#25D366" onclick="sendWhatsAppSummary()">Enviar a WhatsApp</button>
+                <button class="cta-button" style="background:#25D366" onclick="sendWhatsAppSummary()">Enviar comprobante</button>
             </div>
         </div>
     </div>
 
-    <!-- PANEL ADMINISTRADOR REESTRUCTURADO -->
+    <!-- PANEL ADMIN -->
     <div class="modal-overlay" id="admin-modal">
         <div class="modal-content modal-large">
             <button class="close-modal" onclick="closeAdminModal()">&times;</button>
             
+            <!-- Login -->
             <div id="admin-login-view">
                 <h3 style="text-align:center">🔐 Acceso Admin</h3>
                 <form onsubmit="handleAdminLogin(event)">
-                    <input type="password" id="admin-pass" placeholder="Contraseña" required style="width:100%; padding:10px; margin-bottom:10px;">
+                    <input type="password" id="admin-pass" placeholder="Contraseña" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;">
                     <button type="submit" class="cta-button" style="width:100%">Entrar</button>
                 </form>
             </div>
 
+            <!-- Dashboard -->
             <div id="admin-dashboard-view" style="display:none;">
-                <!-- Pestañas -->
                 <div class="admin-tabs" style="display:flex; gap:10px; margin-bottom:20px; border-bottom:1px solid #ddd; padding-bottom:10px;">
                     <button onclick="switchAdminTab('products')" class="admin-tab-btn active">📦 Inventario</button>
                     <button onclick="switchAdminTab('sales')" class="admin-tab-btn">📊 Ventas</button>
@@ -139,37 +143,46 @@
                 <!-- Pestaña Inventario -->
                 <div id="tab-products" class="admin-tab-content">
                     <button onclick="openProductForm()" class="btn-primary">+ Nuevo Producto</button>
-                    <div id="product-form-box" class="admin-form-box" style="display:none; margin-top:15px; background:#f9f9f9; padding:15px; border-radius:10px;">
+                    
+                    <div id="product-form-box" class="admin-form-box" style="display:none; margin-top:15px; background:#f9f9f9; padding:15px; border-radius:10px; border:1px solid #ddd;">
                         <form onsubmit="saveProduct(event)">
-                            <input type="text" id="prod-name" placeholder="Nombre" required>
-                            <div style="display:flex; gap:10px;">
-                                    <div id="tab-products" class="admin-tab-content">
-                    <button onclick="openProductForm()" class="btn-primary">+ Nuevo Producto</button>
-                    <div id="product-form-box" class="admin-form-box" style="display:none; margin-top:15px; background:#f9f9f9; padding:15px; border-radius:10px;">
-                        <form onsubmit="saveProduct(event)">
-                            <input type="text" id="prod-name" placeholder="Nombre" required>
-                            <div style="display:flex; gap:10px; margin-bottom: 10px;">
-                                    <select id="prod-cat" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; font-family: inherit;">
-                                     <option value="pijamas">Pijamas</option>
-                                      <option value="lenceria">Lencería</option>
+                            <div class="form-group">
+                                <label>Nombre del Producto:</label>
+                                <input type="text" id="prod-name" placeholder="Ej: Pijama Lisboa" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc;">
+                            </div>
+
+                            <div style="display:flex; gap:10px; margin:10px 0;">
+                                <div style="flex:1">
+                                    <label>Categoría:</label>
+                                    <select id="prod-cat" style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc;">
+                                        <option value="pijamas">Pijamas</option>
+                                        <option value="lenceria">Lencería</option>
                                         <option value="sets">Sets</option>
-                                         <option value="accesorios">Accesorios</option>
-                                     </select>
+                                        <option value="accesorios">Accesorios</option>
+                                    </select>
+                                </div>
+                                <div style="flex:1">
+                                    <label>Precio (€):</label>
+                                    <input type="number" id="prod-price" step="0.01" placeholder="0.00" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc;">
+                                </div>
                             </div>
-                            <div class="admin-sizes">
-                                <label>Stock por talla:</label>
-                                S: <input type="number" id="stock-s" value="0" style="width:50px">
-                                M: <input type="number" id="stock-m" value="0" style="width:50px">
-                                L: <input type="number" id="stock-l" value="0" style="width:50px">
-                                XL: <input type="number" id="stock-xl" value="0" style="width:50px">
+
+                            <div class="admin-sizes" style="margin-bottom:15px;">
+                                <label>Stock por talla:</label><br>
+                                S: <input type="number" id="stock-s" value="0" style="width:45px">
+                                M: <input type="number" id="stock-m" value="0" style="width:45px">
+                                L: <input type="number" id="stock-l" value="0" style="width:45px">
+                                XL: <input type="number" id="stock-xl" value="0" style="width:45px">
                             </div>
+
                             <div class="admin-photos">
-                                <label>Fotos (3):</label>
-                                <input type="file" onchange="previewImg(this, 1)">
-                                <input type="file" onchange="previewImg(this, 2)">
+                                <label>Fotos (3 recomendadas):</label><br>
+                                <input type="file" onchange="previewImg(this, 1)" style="margin-bottom:5px;">
+                                <input type="file" onchange="previewImg(this, 2)" style="margin-bottom:5px;">
                                 <input type="file" onchange="previewImg(this, 3)">
                             </div>
-                            <button type="submit" class="btn-save">Publicar</button>
+
+                            <button type="submit" class="btn-save" style="width:100%; margin-top:15px; padding:12px; background: #4a254b; color: white; border: none; border-radius: 8px; cursor: pointer;">Publicar Producto</button>
                         </form>
                     </div>
                     <div id="admin-inventory-list" style="margin-top:20px;"></div>
@@ -178,26 +191,17 @@
                 <!-- Pestaña Ventas -->
                 <div id="tab-sales" class="admin-tab-content" style="display:none;">
                     <div style="display:flex; gap:15px; margin-bottom:15px;">
-                        <div class="stat-card">Total Ventas: <strong id="stat-total-sales">0</strong></div>
-                        <div class="stat-card">Ingresos: <strong id="stat-total-eur">€ 0.00</strong></div>
-                    </div>
-                    <button onclick="openManualSaleForm()" class="btn-primary" style="width:100%; margin-bottom:15px;">+ Venta Manual / WhatsApp</button>
-                    <div id="manual-sale-form-box" style="display:none; background:#f0f7ff; padding:15px; border-radius:10px; margin-bottom:15px;">
-                        <form onsubmit="saveManualSale(event)">
-                            <input type="text" id="manual-client" placeholder="Nombre Cliente" required>
-                            <select id="manual-prod-select"></select>
-                            <input type="number" id="manual-qty" value="1" min="1" style="width:60px">
-                            <button type="submit" class="btn-save">Registrar</button>
-                        </form>
+                        <div class="stat-card" style="background:white; padding:15px; border-radius:10px; flex:1; border:1px solid #ddd;">Ventas: <strong id="stat-total-sales">0</strong></div>
+                        <div class="stat-card" style="background:white; padding:15px; border-radius:10px; flex:1; border:1px solid #ddd;">Ingresos: <strong id="stat-total-eur">€ 0.00</strong></div>
                     </div>
                     <div id="admin-sales-list"></div>
                 </div>
 
                 <!-- Pestaña Tasa -->
                 <div id="tab-rate" class="admin-tab-content" style="display:none;">
-                    <div class="rate-box" style="background:#f9f9f9; padding:20px; border-radius:10px;">
+                    <div style="background:white; padding:20px; border-radius:10px; border:1px solid #ddd;">
                         <label>Nueva Tasa BCV (Bs/€):</label>
-                        <input type="number" id="admin-rate-input" step="0.01" style="padding:8px; margin:10px 0; width:100%;">
+                        <input type="number" id="admin-rate-input" step="0.01" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px;">
                         <button onclick="saveManualRate()" class="cta-button" style="width:100%">Actualizar Tasa</button>
                     </div>
                 </div>
@@ -207,19 +211,19 @@
 
     <footer class="footer"><p>© 2026 CÓSMICA | Tu brillo es universal ✨</p></footer>
 
+    <!-- SCRIPTS -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script>
-        // RECUERDA PONER TUS CREDENCIALES AQUÍ
         const firebaseConfig = {
-  apiKey: "AIzaSyCoG8XuSTmdRq75XtZ4z6XA8BlkIh51N5g",
-  authDomain: "cosmica-tienda.firebaseapp.com",
-  projectId: "cosmica-tienda",
-  storageBucket: "cosmica-tienda.firebasestorage.app",
-  messagingSenderId: "1037817099642",
-  appId: "1:1037817099642:web:e5d3aed8105196aa4b92c3",
-  measurementId: "G-7V2EMNDE9Q"
-};
+            apiKey: "AIzaSyCoG8XuSTmdRq75XtZ4z6XA8BlkIh51N5g",
+            authDomain: "cosmica-tienda.firebaseapp.com",
+            projectId: "cosmica-tienda",
+            storageBucket: "cosmica-tienda.firebasestorage.app",
+            messagingSenderId: "1037817099642",
+            appId: "1:1037817099642:web:e5d3aed8105196aa4b92c3",
+            measurementId: "G-7V2EMNDE9Q"
+        };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         lucide.createIcons();
