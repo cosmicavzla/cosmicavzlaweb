@@ -134,86 +134,116 @@
         </div>
     </div>
 
-    <!-- PANEL ADMIN -->
-    <div class="modal-overlay" id="admin-modal">
-        <div class="modal-content modal-large">
-            <button class="close-modal" onclick="closeAdminModal()">&times;</button>
-            
-            <div id="admin-login-view">
-                <h3 style="text-align:center">🔐 Acceso Admin</h3>
-                <form onsubmit="handleAdminLogin(event)">
-                    <input type="password" id="admin-pass" placeholder="Contraseña" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;">
-                    <button type="submit" class="cta-button" style="width:100%">Entrar</button>
-                </form>
+   <!-- PANEL ADMIN PROFESIONAL -->
+<div class="modal-overlay" id="admin-modal">
+    <div class="modal-content modal-large">
+        <!-- El botón de cerrar (X) ahora está solo en la esquina -->
+        <button class="close-modal" onclick="closeAdminModal()">&times;</button>
+        
+        <!-- Vista Login -->
+        <div id="admin-login-view">
+            <h3 style="text-align:center; margin-bottom: 20px;">🔐 Acceso Restringido</h3>
+            <form onsubmit="handleAdminLogin(event)">
+                <input type="password" id="admin-pass" placeholder="Ingresa tu contraseña" required style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #ddd;">
+                <button type="submit" class="cta-button">Entrar al Sistema</button>
+            </form>
+        </div>
+
+        <!-- Vista Dashboard -->
+        <div id="admin-dashboard-view" style="display:none;">
+            <div class="admin-header-tabs">
+                <button onclick="switchAdminTab('products')" class="admin-tab-btn active">📦 Inventario</button>
+                <button onclick="switchAdminTab('sales')" class="admin-tab-btn">📊 Ventas</button>
+                <button onclick="switchAdminTab('rate')" class="admin-tab-btn">⚙️ Tasa BCV</button>
+                <button onclick="adminLogout()" class="btn-danger" style="margin-left: auto;">Cerrar Sesión</button>
             </div>
 
-            <div id="admin-dashboard-view" style="display:none;">
-                <div class="admin-tabs" style="display:flex; gap:10px; margin-bottom:20px; border-bottom:1px solid #ddd; padding-bottom:10px;">
-                    <button onclick="switchAdminTab('products')" class="admin-tab-btn active">📦 Inventario</button>
-                    <button onclick="switchAdminTab('sales')" class="admin-tab-btn">📊 Ventas</button>
-                    <button onclick="switchAdminTab('rate')" class="admin-tab-btn">⚙️ Tasa BCV</button>
-                    <button onclick="adminLogout()" class="btn-danger" style="margin-left:auto">Salir</button>
-                </div>
-
-                <div id="tab-products" class="admin-tab-content">
+            <!-- Contenido: Inventario -->
+            <div id="tab-products" class="admin-tab-content">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h3 style="color:#333;">Gestión de Productos</h3>
                     <button onclick="openProductForm()" class="btn-primary">+ Nuevo Producto</button>
-                    <div id="product-form-box" class="admin-form-box" style="display:none; margin-top:15px; background:#f9f9f9; padding:20px; border-radius:10px; border:1px solid #ddd;">
-                        <form onsubmit="saveProduct(event)">
-                            <div class="form-group">
-                                <label>Nombre del Producto:</label>
-                                <input type="text" id="prod-name" placeholder="Ej: Pijama Lisboa" required style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; margin-bottom:10px;">
-                            </div>
-                            <div style="display:flex; gap:10px; margin-bottom:15px;">
-                                <div style="flex:1">
-                                    <label>Categoría:</label>
-                                    <select id="prod-cat" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
-                                        <option value="pijamas">Pijamas</option>
-                                        <option value="lenceria">Lencería</option>
-                                        <option value="sets">Sets</option>
-                                        <option value="accesorios">Accesorios</option>
-                                    </select>
-                                </div>
-                                <div style="flex:1">
-                                    <label>Precio (€):</label>
-                                    <input type="number" id="prod-price" step="0.01" placeholder="0.00" required style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                            </div>
-                            <div class="admin-sizes" style="background: #eee; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
-                                <label>Stock por talla:</label><br>
-                                S: <input type="number" id="stock-s" value="0" style="width:45px">
-                                M: <input type="number" id="stock-m" value="0" style="width:45px">
-                                L: <input type="number" id="stock-l" value="0" style="width:45px">
-                                XL: <input type="number" id="stock-xl" value="0" style="width:45px">
-                            </div>
-                            <div class="admin-photos">
-                                <label>Fotos (3):</label><br>
-                                <input type="file" onchange="previewImg(this, 1)">
-                                <input type="file" onchange="previewImg(this, 2)">
-                                <input type="file" onchange="previewImg(this, 3)">
-                            </div>
-                            <button type="submit" class="btn-save" style="width:100%; margin-top:10px;">Publicar Producto</button>
-                        </form>
-                    </div>
-                    <div id="admin-inventory-list" style="margin-top:20px;"></div>
                 </div>
 
-                <div id="tab-sales" class="admin-tab-content" style="display:none;">
-                    <div style="display:flex; gap:15px; margin-bottom:15px;">
-                        <div class="stat-card">Ventas: <strong id="stat-total-sales">0</strong></div>
-                        <div class="stat-card">Ingresos: <strong id="stat-total-eur">€ 0.00</strong></div>
-                    </div>
-                    <div id="admin-sales-list"></div>
+                <div id="product-form-box" class="admin-form-box" style="display:none; background:#fff; padding:20px; border-radius:15px; border:2px solid #eee; margin-bottom:25px;">
+                    <form onsubmit="saveProduct(event)">
+                        <input type="hidden" id="edit-id">
+                        <label>Nombre del Producto:</label>
+                        <input type="text" id="prod-name" placeholder="Ej: Pijama Seda" required style="width:100%; padding:10px; margin-bottom:15px; border-radius:8px; border:1px solid #ddd;">
+                        
+                        <div style="display:flex; gap:15px; margin-bottom:15px;">
+                            <div style="flex:1">
+                                <label>Categoría:</label>
+                                <select id="prod-cat" style="width:100%; padding:10px; border-radius:8px;">
+                                    <option value="pijamas">Pijamas</option>
+                                    <option value="lenceria">Lencería</option>
+                                    <option value="sets">Sets</option>
+                                    <option value="accesorios">Accesorios</option>
+                                </select>
+                            </div>
+                            <div style="flex:1">
+                                <label>Precio (€):</label>
+                                <input type="number" id="prod-price" step="0.01" placeholder="0.00" required style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd;">
+                            </div>
+                        </div>
+
+                        <div style="background:#f8f9fa; padding:15px; border-radius:10px; margin-bottom:15px;">
+                            <label><strong>Stock disponible por talla:</strong></label><br>
+                            <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-top:10px;">
+                                <div>S: <input type="number" id="stock-s" value="0" style="width:100%"></div>
+                                <div>M: <input type="number" id="stock-m" value="0" style="width:100%"></div>
+                                <div>L: <input type="number" id="stock-l" value="0" style="width:100%"></div>
+                                <div>XL: <input type="number" id="stock-xl" value="0" style="width:100%"></div>
+                            </div>
+                        </div>
+
+                        <label>Fotos (Carga nuevas para cambiar las actuales):</label>
+                        <input type="file" onchange="previewImg(this, 1)" style="display:block; margin:5px 0;">
+                        <input type="file" onchange="previewImg(this, 2)" style="display:block; margin:5px 0;">
+                        <input type="file" onchange="previewImg(this, 3)" style="display:block; margin:5px 0;">
+
+                        <div style="display:flex; gap:10px; margin-top:20px;">
+                            <button type="submit" class="cta-button" id="btn-save-text">Publicar</button>
+                            <button type="button" onclick="closeProductForm()" class="btn-danger" style="background:#ccc; border:none; color:#333;">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+                <div id="admin-inventory-list"></div>
+            </div>
+
+            <!-- Contenido: Ventas -->
+            <div id="tab-sales" class="admin-tab-content" style="display:none;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:25px;">
+                    <div class="stat-card">Total Ventas: <strong id="stat-total-sales">0</strong></div>
+                    <div class="stat-card">Ingresos (€): <strong id="stat-total-eur">0.00</strong></div>
                 </div>
 
-                <div id="tab-rate" class="admin-tab-content" style="display:none;">
-                    <div style="background:white; padding:20px; border-radius:10px; border:1px solid #ddd;">
-                        <label>Nueva Tasa BCV (Bs/€):</label>
-                        <input type="number" id="admin-rate-input" step="0.01" style="width:100%; padding:10px; margin:10px 0;">
-                        <button onclick="saveManualRate()" class="cta-button" style="width:100%">Actualizar Tasa</button>
-                    </div>
+                <div style="background:#eef2ff; padding:20px; border-radius:15px; margin-bottom:25px; border:1px solid #c7d2fe;">
+                    <h4 style="color:#3730a3; margin-bottom:15px;">+ Registrar Venta Manual</h4>
+                    <form onsubmit="saveManualSale(event)" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <input type="text" id="manual-client" placeholder="Nombre del cliente" required style="grid-column: span 2; padding:10px;">
+                        <select id="manual-prod-select" style="padding:10px;"></select>
+                        <select id="manual-size-select" style="padding:10px;">
+                            <option value="S">S</option><option value="M">M</option><option value="L">L</option><option value="XL">XL</option>
+                        </select>
+                        <input type="number" id="manual-qty" value="1" min="1" style="padding:10px;">
+                        <button type="submit" class="btn-primary" style="background:#4338ca;">Guardar Venta</button>
+                    </form>
+                </div>
+                <div id="admin-sales-list"></div>
+            </div>
+
+            <!-- Contenido: Tasa -->
+            <div id="tab-rate" class="admin-tab-content" style="display:none;">
+                <div style="background:#fff; padding:25px; border-radius:15px; border:1px solid #ddd; max-width:400px; margin: 0 auto;">
+                    <label style="font-weight:bold; color:#333;">Tasa Actual BCV (Bolívares por Euro):</label>
+                    <input type="number" id="admin-rate-input" step="0.01" style="width:100%; padding:15px; margin:15px 0; font-size:1.5rem; text-align:center; border-radius:10px; border:2px solid #eee;">
+                    <button onclick="saveManualRate()" class="cta-button">Actualizar Tasa Ahora</button>
                 </div>
             </div>
         </div>
+    </div>
+</div>
     </header>
 
     <footer class="footer"><p>© 2026 CÓSMICA | Tu brillo es universal ✨</p></footer>
