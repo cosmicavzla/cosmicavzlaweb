@@ -1,511 +1,487 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cósmica - Tienda Online</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cósmica - Tienda Online</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- ==========================================
-         CABECERA Y NAVEGACIÓN
-         ========================================== -->
-    <header class="navbar">
-        <nav class="nav-links">
-            <a href="#">Inicio</a>
-            <a href="#catalogo">Catálogo</a>
-            <a href="#nosotras">Nosotras</a>
-        </nav>
-        <div class="logo">
-            <img src="img/icono.png" alt="Logo Cósmica">
-        </div>
-        <div class="nav-icons">
-            <button class="icon-btn" aria-label="Buscar">🔍</button>
-            <button class="icon-btn" id="open-admin-btn" title="Panel de Administración" aria-label="Administración">⚙️</button>
-            <button class="icon-btn cart-btn" id="open-cart-btn" aria-label="Carrito de compras">
-                🛒 <span class="cart-count" id="cart-count">0</span>
-            </button>
-        </div>
-    </header>
+    <!-- ==========================================
+         CABECERA Y NAVEGACIÓN
+         ========================================== -->
+    <header class="navbar">
+        <nav class="nav-links">
+            <a href="#">Inicio</a>
+            <a href="#catalogo">Catálogo</a>
+            <a href="#nosotras">Nosotras</a>
+        </nav>
+        <div class="logo">
+            <img src="img/icono.png" alt="Logo Cósmica">
+        </div>
+        <div class="nav-icons">
+            <button class="icon-btn" aria-label="Buscar">🔍</button>
+            <button class="icon-btn" id="open-admin-btn" title="Panel de Administración">⚙️</button>
+            <button class="icon-btn cart-btn" id="open-cart-btn" aria-label="Carrito">
+                🛒 <span class="cart-count" id="cart-count">0</span>
+            </button>
+        </div>
+    </header>
 
-    <main>
-        <!-- ==========================================
-             HERO BANNER
-             ========================================== -->
-        <section class="hero-banner">
-            <div class="hero-content">
-                <h2>Descubre tu magia</h2>
-                <p>Explora nuestra colección cósmica y encuentra prendas que resalten tu brillo interior.</p>
-                <button class="cta-button">Shop Shop Shop</button>
-            </div>
-            <div class="hero-image-container">
-                <img src="img/1001106409.jpg" alt="Modelo Cósmica" class="hero-img">
-            </div>
-        </section>
+    <main>
+        <!-- ==========================================
+             HERO BANNER
+             ========================================== -->
+        <section class="hero-banner">
+            <div class="hero-content">
+                <h2>Descubre tu magia</h2>
+                <p>Explora nuestra colección cósmica y encuentra prendas que resalten tu brillo interior.</p>
+                <button class="cta-button">Shop Shop Shop</button>
+            </div>
+            <div class="hero-image-container">
+                <img src="img/1001106409.jpg" alt="Modelo Cósmica" class="hero-img">
+            </div>
+        </section>
 
-        <!-- ==========================================
-             CATEGORÍAS / COLECCIONES
-             ========================================== -->
-        <section class="categories-section">
-            <h3 class="section-title">Colecciones</h3>
-            <div class="categories-grid">
-                <div class="category-card" data-categoria="pijamas">
-                    <span class="category-title">Pijamas</span>
-                </div>
-                <div class="category-card" data-categoria="lenceria">
-                    <span class="category-title">Lencería</span>
-                </div>
-                <div class="category-card" data-categoria="sets">
-                    <span class="category-title">Sets</span>
-                </div>
-                <div class="category-card" data-categoria="accesorios">
-                    <span class="category-title">Accesorios</span>
-                </div>
-            </div>
-        </section>
+        <!-- ==========================================
+             CATEGORÍAS / COLECCIONES
+             ========================================== -->
+        <section class="categories-section">
+            <h3 class="section-title">Colecciones</h3>
+            <div class="categories-grid">
+                <div class="category-card" data-categoria="pijamas">
+                    <span class="category-title">Pijamas</span>
+                </div>
+                <div class="category-card" data-categoria="lenceria">
+                    <span class="category-title">Lencería</span>
+                </div>
+                <div class="category-card" data-categoria="sets">
+                    <span class="category-title">Sets</span>
+                </div>
+                <div class="category-card" data-categoria="accesorios">
+                    <span class="category-title">Accesorios</span>
+                </div>
+            </div>
+        </section>
 
-        <!-- ==========================================
-             CATÁLOGO, BÚSQUEDA Y FILTROS
-             ========================================== -->
-        <section class="catalog-section" id="catalogo">
-            <h3 class="section-title">Nuestro Catálogo</h3>
-            
-            <div class="filters-bar">
-                <div class="search-box">
-                    <input type="text" placeholder="Buscar producto..." id="search-input" aria-label="Buscar producto">
-                </div>
-                
-                <div class="select-filters">
-                    <select id="filter-category" aria-label="Filtrar por categoría">
-                        <option value="">Todas las categorías</option>
-                        <option value="pijamas">Pijamas</option>
-                        <option value="lenceria">Lencería</option>
-                        <option value="sets">Sets</option>
-                        <option value="accesorios">Accesorios</option>
-                    </select>
+        <!-- ==========================================
+             CATÁLOGO, BÚSQUEDA Y FILTROS
+             ========================================== -->
+        <section class="catalog-section" id="catalogo">
+            <h3 class="section-title">Nuestro Catálogo</h3>
+            
+            <div class="filters-bar">
+                <div class="search-box">
+                    <input type="text" placeholder="Buscar producto..." id="search-input">
+                </div>
+                
+                <div class="select-filters">
+                    <select id="filter-category">
+                        <option value="">Todas las categorías</option>
+                        <option value="pijamas">Pijamas</option>
+                        <option value="lenceria">Lencería</option>
+                        <option value="sets">Sets</option>
+                        <option value="accesorios">Accesorios</option>
+                    </select>
 
-                    <select id="sort-by" aria-label="Ordenar productos">
-                        <option value="default">Ordenar por</option>
-                        <option value="price-asc">Precio: Menor a Mayor</option>
-                        <option value="price-desc">Precio: Mayor a Menor</option>
-                    </select>
-                </div>
-            </div>
+                    <select id="sort-by">
+                        <option value="default">Ordenar por</option>
+                        <option value="price-asc">Precio: Menor a Mayor</option>
+                        <option value="price-desc">Precio: Mayor a Menor</option>
+                    </select>
+                </div>
+            </div>
 
-            <!-- Grilla Dinámica de Productos -->
-            <div class="products-grid" id="products-container">
-                <!-- Se carga dinámicamente desde app.js -->
-            </div>
-        </section>
+            <!-- Grilla Dinámica de Productos -->
+            <div class="products-grid" id="products-container">
+                <!-- Se carga dinámicamente desde app.js -->
+            </div>
+        </section>
 
-        <!-- ==========================================
-             SECCIÓN SOBRE NOSOTRAS
-             ========================================== -->
-        <section id="nosotras" class="about-section">
-            <div class="about-content">
-                <h3 class="section-title">Sobre Nosotras</h3>
-                <p>En Cósmica, creemos que la moda es una forma de expresión personal y espiritual. Nos dedicamos a crear y curar prendas que no solo te hagan ver bien, sino también sentirte conectada con tu propia magia y el universo que te rodea.</p>
-            </div>
-        </section>
-    </main>
+        <!-- ==========================================
+             SECCIÓN SOBRE NOSOTRAS
+             ========================================== -->
+        <section id="nosotras" class="about-section">
+            <div class="about-content">
+                <h3 class="section-title">Sobre Nosotras</h3>
+                <p>En Cósmica, creemos que la moda es una forma de expresión personal y espiritual. Nos dedicamos a crear y curar prendas que no solo te hagan ver bien, sino también sentirte conectada con tu propia magia y el universo que te rodea.</p>
+            </div>
+        </section>
+    </main>
 
-    <!-- ==========================================
-         MODALES Y ELEMENTOS EMERGENTES
-         ========================================== -->
+    <!-- ==========================================
+         MODALES Y ELEMENTOS EMERGENTES
+         ========================================== -->
 
-    <!-- MODAL SELECCIÓN DE PRODUCTO (DETALLE) -->
-    <div class="modal-overlay" id="product-modal" aria-hidden="true">
-        <div class="modal-content">
-            <button class="close-modal" id="close-modal-btn" aria-label="Cerrar modal">&times;</button>
-            <div class="modal-body" id="modal-body-content">
-                <!-- Contenido dinámico cargado por JS -->
-            </div>
-        </div>
-    </div>
+    <!-- MODAL SELECCIÓN DE PRODUCTO (DETALLE) -->
+    <div class="modal-overlay" id="product-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-modal-btn">&times;</button>
+            <div class="modal-body" id="modal-body-content">
+                <!-- Contenido dinámico cargado por JS -->
+            </div>
+        </div>
+    </div>
 
-    <!-- DRAWER / PANEL LATERAL DEL CARRITO -->
-    <div class="cart-drawer-overlay" id="cart-drawer-overlay"></div>
-    <aside class="cart-drawer" id="cart-drawer">
-        <div class="cart-header">
-            <h3>Tu Carrito</h3>
-            <button class="close-modal" id="close-cart-btn" aria-label="Cerrar carrito">&times;</button>
-        </div>
-        <div class="cart-items-container" id="cart-items-container">
-            <!-- Items del carrito cargados por JS -->
-        </div>
-        <div class="cart-footer">
-            <div class="cart-total-row">
-                <span>Subtotal:</span>
-                <span id="cart-subtotal">€ 0.00</span>
-            </div>
-            <div class="cart-total-row total-highlight">
-                <span>Total:</span>
-                <span id="cart-total">€ 0.00</span>
-            </div>
-            <button class="checkout-btn" id="checkout-btn">Proceder al Pago</button>
-        </div>
-    </aside>
+    <!-- DRAWER / PANEL LATERAL DEL CARRITO -->
+    <div class="cart-drawer-overlay" id="cart-drawer-overlay"></div>
+    <aside class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h3>Tu Carrito</h3>
+            <button class="close-modal" id="close-cart-btn">&times;</button>
+        </div>
+        <div class="cart-items-container" id="cart-items-container">
+            <!-- Items del carrito cargados por JS -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total-row">
+                <span>Subtotal:</span>
+                <span id="cart-subtotal">€ 0.00</span>
+            </div>
+            <div class="cart-total-row total-highlight">
+                <span>Total:</span>
+                <span id="cart-total">€ 0.00</span>
+            </div>
+            <button class="checkout-btn" id="checkout-btn">Proceder al Pago</button>
+        </div>
+    </aside>
 
-    <!-- MODAL DE CHECKOUT / CREACIÓN DE PEDIDO -->
-    <div class="modal-overlay" id="checkout-modal" aria-hidden="true">
-        <div class="modal-content modal-checkout-card">
-            <button class="close-modal" id="close-checkout-btn" aria-label="Cerrar pago">&times;</button>
-            
-            <!-- Paso 1: Datos del Cliente -->
-            <div id="checkout-step-1">
-                <h3 class="modal-title-purple">Datos del Cliente</h3>
-                <form id="checkout-form" onsubmit="processOrder(event)">
-                    <div class="form-group">
-                        <label for="client-name">Nombre Completo *</label>
-                        <input type="text" id="client-name" required placeholder="Ej. María Pérez">
-                    </div>
-                    <div class="form-group">
-                        <label for="client-phone">Teléfono / WhatsApp *</label>
-                        <input type="tel" id="client-phone" required placeholder="Ej. 04121234567">
-                    </div>
-                    <div class="form-group">
-                        <label for="client-notes">Notas / Dirección de entrega (Opcional)</label>
-                        <textarea id="client-notes" rows="2" placeholder="Detalles de entrega..."></textarea>
-                    </div>
+    <!-- MODAL DE CHECKOUT / CREACIÓN DE PEDIDO -->
+    <div class="modal-overlay" id="checkout-modal">
+        <div class="modal-content" style="max-width: 550px;">
+            <button class="close-modal" id="close-checkout-btn">&times;</button>
+            
+            <!-- Paso 1: Datos del Cliente -->
+            <div id="checkout-step-1">
+                <h3 style="margin-top:0; color: var(--morado-texto);">Datos del Cliente</h3>
+                <form id="checkout-form" onsubmit="processOrder(event)">
+                    <div class="form-group">
+                        <label for="client-name">Nombre Completo *</label>
+                        <input type="text" id="client-name" required placeholder="Ej. María Pérez">
+                    </div>
+                    <div class="form-group">
+                        <label for="client-phone">Teléfono / WhatsApp *</label>
+                        <input type="tel" id="client-phone" required placeholder="Ej. 04121234567">
+                    </div>
+                    <div class="form-group">
+                        <label for="client-notes">Notas / Dirección de entrega (Opcional)</label>
+                        <textarea id="client-notes" rows="2" placeholder="Detalles de entrega..."></textarea>
+                    </div>
 
-                    <div class="checkout-summary-box">
-                        <p><strong>Total en Euros:</strong> <span id="checkout-total-eur">€ 0.00</span></p>
-                    </div>
+                    <div class="checkout-summary-box">
+                        <p><strong>Total en Euros:</strong> <span id="checkout-total-eur">€ 0.00</span></p>
+                    </div>
 
-                    <button type="submit" class="cta-button btn-full-width">
-                        Generar Pedido
-                    </button>
-                </form>
-            </div>
+                    <button type="submit" class="cta-button" style="width: 100%; margin-top: 15px;">
+                        Generar Pedido
+                    </button>
+                </form>
+            </div>
 
-            <!-- Paso 2: Confirmación de Pedido Generado -->
-            <div id="checkout-step-2" class="step-container-hidden center-text">
-                <div class="success-icon">✨</div>
-                <h3 class="modal-title-purple">¡Pedido Creado!</h3>
-                <p>Tu número de pedido es:</p>
-                <div class="order-number-badge" id="order-number-display">COS-1000</div>
-                <p><strong>Estado:</strong> <span class="status-badge">Pago pendiente</span></p>
-                <div class="checkout-summary-box left-text">
-                    <p><strong>Cliente:</strong> <span id="summary-client-name"></span></p>
-                    <p><strong>Total Pedido:</strong> <span id="summary-total-eur"></span></p>
-                </div>
-                <button class="cta-button btn-full-width" onclick="goToPaymentStep()">
-                    Proceder al Pago Móvil
-                </button>
-            </div>
+            <!-- Paso 2: Confirmación de Pedido Generado -->
+            <div id="checkout-step-2" style="display: none; text-align: center;">
+                <div class="success-icon">✨</div>
+                <h3 style="color: var(--morado-texto);">¡Pedido Creado!</h3>
+                <p>Tu número de pedido es:</p>
+                <div class="order-number-badge" id="order-number-display">COS-1000</div>
+                <p><strong>Estado:</strong> <span class="status-badge">Pago pendiente</span></p>
+                <div class="checkout-summary-box" style="text-align: left;">
+                    <p><strong>Cliente:</strong> <span id="summary-client-name"></span></p>
+                    <p><strong>Total Pedido:</strong> <span id="summary-total-eur"></span></p>
+                </div>
+                <button class="cta-button" style="width: 100%; margin-top: 15px;" onclick="goToPaymentStep()">
+                    Proceder al Pago Móvil
+                </button>
+            </div>
 
-            <!-- Paso 3: Pago Móvil y Registro de Referencia -->
-            <div id="checkout-step-3" class="step-container-hidden">
-                <h3 class="modal-title-purple center-text">Pago Móvil (Tasa BCV)</h3>
-                <div class="bcv-rate-box">
-                    <p><strong>Tasa del día (BCV):</strong> <span id="bcv-rate-display">0.00</span> Bs / €</p>
-                    <p class="total-ves-highlight">Monto a Transferir: <span id="checkout-total-ves">0.00 Bs.</span></p>
-                </div>
-                <div class="bank-details-box">
-                    <h4>Datos para realizar el Pago Móvil:</h4>
-                    <p><strong>Banco:</strong> Venezolano de Crédito (0104)</p>
-                    <p><strong>Teléfono:</strong> 0416-1727585</p>
-                    <p><strong>Cédula / RIF:</strong> V-28469015</p>
-                </div>
-                <form id="payment-form" onsubmit="registerPayment(event)">
-                    <div class="form-group">
-                        <label for="payment-bank">Banco de Origen *</label>
-                        <select id="payment-bank" required>
-                            <option value="">Selecciona tu banco</option>
-                            <option value="Banesco">Banesco</option>
-                            <option value="Mercantil">Mercantil</option>
-                            <option value="Banco de Venezuela">Banco de Venezuela</option>
-                            <option value="Provincial">Provincial</option>
-                            <option value="Otro">Otro</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="payment-ref">Número de Referencia (Últimos 6 dígitos) *</label>
-                        <input type="tel" id="payment-ref" inputmode="numeric" pattern="[0-9]{6}" required placeholder="Ej. 123456" maxlength="6">
-                    </div>
-                    <button type="submit" class="cta-button btn-full-width">
-                        Confirmar Pago en la Web
-                    </button>
-                </form>
-                <div class="direct-contact-box">
-                    <p>¿Prefieres acordar tu pago directamente?</p>
-                    <button type="button" class="cta-button whatsapp-direct-btn" onclick="sendDirectPaymentWhatsApp()">
-                        📲 Contactar por WhatsApp
-                    </button>
-                </div>
-            </div>
+            <!-- Paso 3: Pago Móvil y Registro de Referencia -->
+            <div id="checkout-step-3" style="display: none;">
+                <h3 style="margin-top:0; text-align: center; color: var(--morado-texto);">Pago Móvil (Tasa BCV)</h3>
+                <div class="bcv-rate-box">
+                    <p><strong>Tasa del día (BCV):</strong> <span id="bcv-rate-display">0.00</span> Bs / €</p>
+                    <p class="total-ves-highlight">Monto a Transferir: <span id="checkout-total-ves">0.00 Bs.</span></p>
+                </div>
+                <div class="bank-details-box">
+                    <h4>Datos para realizar el Pago Móvil:</h4>
+                    <p><strong>Banco:</strong> Venezolano de Crédito (0104)</p>
+                    <p><strong>Teléfono:</strong> 0416-1727585</p>
+                    <p><strong>Cédula / RIF:</strong> V-28469015</p>
+                </div>
+                <form id="payment-form" onsubmit="registerPayment(event)">
+                    <div class="form-group">
+                        <label for="payment-bank">Banco de Origen *</label>
+                        <select id="payment-bank" required>
+                            <option value="">Selecciona tu banco</option>
+                            <option value="Banesco">Banesco</option>
+                            <option value="Mercantil">Mercantil</option>
+                            <option value="Banco de Venezuela">Banco de Venezuela</option>
+                            <option value="Provincial">Provincial</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment-ref">Número de Referencia (Últimos 6 dígitos) *</label>
+                        <input type="text" id="payment-ref" required placeholder="Ej. 123456" maxlength="6">
+                    </div>
+                    <button type="submit" class="cta-button" style="width: 100%; margin-top: 10px;">
+                        Confirmar Pago en la Web
+                    </button>
+                </form>
+                <div class="direct-contact-box">
+                    <p>¿Prefieres acordar tu pago directamente?</p>
+                    <button type="button" class="cta-button whatsapp-direct-btn" onclick="sendDirectPaymentWhatsApp()">
+                        📲 Contactar por WhatsApp
+                    </button>
+                </div>
+            </div>
 
-            <!-- Paso 4: Pago Registrado y Botón WhatsApp -->
-            <div id="checkout-step-4" class="step-container-hidden center-text">
-                <div class="success-icon">🎉</div>
-                <h3 class="modal-title-purple">¡Pago Reportado!</h3>
-                <p>Hemos registrado el pago para el pedido <strong id="final-order-num">COS-1000</strong>.</p>
-                <p class="status-verification-text">Estado: <span class="status-badge status-success-badge">Pago por Verificar</span></p>
-                <p class="whatsapp-instruction-text">Envía la confirmación por WhatsApp para procesar tu despacho rápidamente:</p>
-                <button class="cta-button btn-whatsapp-confirm" onclick="sendWhatsAppSummary()">
-                    📲 Enviar Confirmación por WhatsApp
-                </button>
-            </div>
-        </div>
-    </div>
+            <!-- Paso 4: Pago Registrado y Botón WhatsApp -->
+            <div id="checkout-step-4" style="display: none; text-align: center;">
+                <div class="success-icon">🎉</div>
+                <h3 style="color: var(--morado-texto);">¡Pago Reportado!</h3>
+                <p>Hemos registrado el pago para el pedido <strong id="final-order-num">COS-1000</strong>.</p>
+                <p style="font-size: 0.9rem; margin: 10px 0;">Estado: <span class="status-badge" style="background:#d4edda; color:#155724;">Pago por Verificar</span></p>
+                <p style="font-size: 0.85rem; color: var(--texto-suave); margin-top: 15px;">Envía la confirmación por WhatsApp para procesar tu despacho rápidamente:</p>
+                <button class="cta-button" style="width: 100%; margin-top: 15px; background-color: #25D366; color: white; border: none;" onclick="sendWhatsAppSummary()">
+                    📲 Enviar Confirmación por WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
 
-    <!-- MODAL ADMINISTRADOR -->
-    <div id="admin-modal" class="modal-overlay" aria-hidden="true">
-        <div class="modal-content admin-modal-card">
-            <button id="close-admin-btn" class="close-modal" onclick="closeAdminModal()" aria-label="Cerrar panel">&times;</button>
-            
-            <!-- VISTA LOGIN -->
-            <div id="admin-login-view">
-                <h3 class="modal-title-purple center-text">🔐 Acceso Administrador</h3>
-                <form onsubmit="handleAdminLogin(event)">
-                    <div class="form-group">
-                        <label for="admin-pass">Contraseña:</label>
-                        <input type="password" id="admin-pass" placeholder="Ingresa contraseña" required>
-                    </div>
-                    <button type="submit" class="cta-button btn-full-width">Ingresar</button>
-                </form>
-            </div>
+    <!-- MODAL ADMINISTRADOR RESTRUCTURADO -->
+    <div id="admin-modal" class="modal-overlay">
+        <div class="modal-content admin-modal-card" style="max-width: 550px;">
+            <button id="close-admin-btn" class="close-modal" onclick="closeAdminModal()">&times;</button>
+            
+            <!-- VISTA LOGIN -->
+            <div id="admin-login-view">
+                <h3 style="margin-top: 0; text-align: center; color: var(--morado-texto);">🔐 Acceso Administrador</h3>
+                <form onsubmit="handleAdminLogin(event)">
+                    <div class="form-group">
+                        <label>Contraseña:</label>
+                        <input type="password" id="admin-pass" placeholder="Ingresa contraseña" required>
+                    </div>
+                    <button type="submit" class="cta-button" style="width: 100%;">Ingresar</button>
+                </form>
+            </div>
 
-            <!-- VISTA PANEL DASHBOARD -->
-            <div id="admin-dashboard-view" class="step-container-hidden">
-                <div class="admin-header-bar">
-                    <h3 class="modal-title-purple">⚙️ Panel CÓSMICA</h3>
-                    <button onclick="adminLogout()" class="btn-logout">Cerrar Sesión</button>
-                </div>
+            <!-- VISTA PANEL DASHBOARD -->
+            <div id="admin-dashboard-view" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--gris-borde);">
+                    <h3 style="margin: 0; color: var(--morado-texto);">⚙️ Panel CÓSMICA</h3>
+                    <button onclick="adminLogout()" style="background: #e11d48; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight:bold;">Cerrar Sesión</button>
+                </div>
 
-                <!-- PESTAÑAS DE NAVEGACIÓN -->
-                <div class="admin-tabs">
-                    <button id="btn-tab-products" class="admin-tab-btn active" onclick="switchAdminTab('products')">📦 Inventario</button>
-                    <button id="btn-tab-sales" class="admin-tab-btn" onclick="switchAdminTab('sales')">📊 Ventas</button>
-                    <button id="btn-tab-rate" class="admin-tab-btn" onclick="switchAdminTab('rate')">⚙️ Tasa BCV</button>
-                </div>
+                <!-- PESTAÑAS DE NAVEGACIÓN -->
+                <div class="admin-tabs">
+                    <button id="btn-tab-products" class="admin-tab-btn active" onclick="switchAdminTab('products')">📦 Inventario</button>
+                    <button id="btn-tab-sales" class="admin-tab-btn" onclick="switchAdminTab('sales')">📊 Ventas</button>
+                    <button id="btn-tab-rate" class="admin-tab-btn" onclick="switchAdminTab('rate')">⚙️ Tasa BCV</button>
+                </div>
 
-                <!-- PESTAÑA 1: INVENTARIO -->
-                <div id="tab-products" class="admin-tab-content">
-                    <div class="admin-section-header">
-                        <h4 class="modal-title-purple">Productos</h4>
-                        <button type="button" onclick="openProductForm()" class="btn-add-product">+ Nuevo Producto</button>
-                    </div>
+                <!-- PESTAÑA 1: INVENTARIO -->
+                <div id="tab-products" class="admin-tab-content">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h4 style="margin: 0; color: var(--morado-texto);">Productos</h4>
+                        <button onclick="openProductForm()" style="background: var(--morado-oscuro); color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: bold;">+ Nuevo Producto</button>
+                    </div>
 
-                    <!-- FORMULARIO DE PRODUCTO -->
-                    <div id="product-form-box" class="admin-form-box step-container-hidden">
-                        <h5 id="form-product-title">Editar Producto</h5>
-                        <form id="main-product-form" onsubmit="saveProduct(event)">
-                            <input type="hidden" id="prod-id">
-                            
-                            <div class="form-group">
-                                <label for="prod-name">Nombre del Producto:</label>
-                                <input type="text" id="prod-name" required placeholder="Ej. Pijama Satén Rosa">
-                            </div>
+                    <!-- FORMULARIO DESPLEGABLE DE PRODUCTO -->
+                    <div id="product-form-box" class="admin-form-box" style="display: none;">
+                        <h5 id="form-product-title">Editar Producto</h5>
+                        <form onsubmit="saveProduct(event)">
+                            <input type="hidden" id="prod-id">
+                            
+                            <div class="form-group">
+                                <label>Nombre del Producto:</label>
+                                <input type="text" id="prod-name" required>
+                            </div>
 
-                            <div class="form-group">
-                                <label for="prod-cat">Categoría:</label>
-                                <select id="prod-cat" required class="select-full">
-                                    <option value="pijamas">Pijamas</option>
-                                    <option value="lenceria">Lencería</option>
-                                    <option value="sets">Sets</option>
-                                    <option value="accesorios">Accesorios</option>
-                                </select>
-                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Categoría:</label>
+                                    <select id="prod-cat" required style="width: 100%; padding: 8px; border: 1px solid var(--gris-borde); border-radius: 6px;">
+                                        <option value="pijamas">Pijamas</option>
+                                        <option value="lenceria">Lencería</option>
+                                        <option value="sets">Sets</option>
+                                        <option value="accesorios">Accesorios</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Stock:</label>
+                                    <input type="number" id="prod-stock" min="0" required>
+                                </div>
+                            </div>
 
-                            <!-- INPUTS DE STOCK INDIVIDUAL POR TALLA -->
-                            <div class="form-group">
-                                <label class="label-semibold">Stock por Talla:</label>
-                                <div class="sizes-stock-inputs">
-                                    <div class="size-input-item">
-                                        <label for="prod-stock-xs">XS</label>
-                                        <input type="number" id="prod-stock-xs" min="0" value="0">
-                                    </div>
-                                    <div class="size-input-item">
-                                        <label for="prod-stock-s">S</label>
-                                        <input type="number" id="prod-stock-s" min="0" value="0">
-                                    </div>
-                                    <div class="size-input-item">
-                                        <label for="prod-stock-m">M</label>
-                                        <input type="number" id="prod-stock-m" min="0" value="0">
-                                    </div>
-                                    <div class="size-input-item">
-                                        <label for="prod-stock-l">L</label>
-                                        <input type="number" id="prod-stock-l" min="0" value="0">
-                                    </div>
-                                    <div class="size-input-item">
-                                        <label for="prod-stock-xl">XL</label>
-                                        <input type="number" id="prod-stock-xl" min="0" value="0">
-                                    </div>
-                                </div>
-                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Precio Base (€):</label>
+                                    <input type="number" step="0.01" id="prod-price" required>
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Precio Promo (€):</label>
+                                    <input type="number" step="0.01" id="prod-promo-price" placeholder="Opcional">
+                                </div>
+                            </div>
 
-                            <div class="form-row-flex">
-                                <div class="form-group flex-1">
-                                    <label for="prod-price">Precio Base (€):</label>
-                                    <input type="number" step="0.01" id="prod-price" required placeholder="0.00">
-                                </div>
-                                <div class="form-group flex-1">
-                                    <label for="prod-promo-price">Precio Promo (€):</label>
-                                    <input type="number" step="0.01" id="prod-promo-price" placeholder="Opcional">
-                                </div>
-                            </div>
+                            <div class="form-group checkbox-group">
+                                <input type="checkbox" id="prod-is-promo">
+                                <label for="prod-is-promo" class="promo-label">🔥 Marcar como Promoción / Oferta</label>
+                            </div>
 
-                            <div class="form-group checkbox-group">
-                                <input type="checkbox" id="prod-is-promo">
-                                <label for="prod-is-promo" class="promo-label">🔥 Marcar como Promoción / Oferta</label>
-                            </div>
+                            <!-- CÁRGADO DE FOTO DESDE GALERÍA -->
+                            <div class="form-group">
+                                <label>Foto del Producto (Galería):</label>
+                                <input type="hidden" id="prod-img">
+                                <input type="file" id="prod-img-file" accept="image/*" onchange="handleProductImageUpload(event)" class="input-file">
+                                
+                                <div id="prod-img-preview-container" class="img-preview-box" style="display: none;">
+                                    <img id="prod-img-preview" src="" alt="Previa">
+                                    <span class="upload-success">✓ Imagen cargada</span>
+                                    <button type="button" onclick="clearProductImage()" class="btn-clear-img">Quitar</button>
+                                </div>
+                            </div>
 
-                            <!-- CARGADO DE FOTO DESDE GALERÍA -->
-                            <div class="form-group">
-                                <label for="prod-img-file">Foto del Producto (Galería):</label>
-                                <input type="hidden" id="prod-img">
-                                <input type="file" id="prod-img-file" accept="image/*" onchange="handleProductImageUpload(event)" class="input-file">
-                                
-                                <div id="prod-img-preview-container" class="img-preview-box step-container-hidden">
-                                    <img id="prod-img-preview" src="" alt="Previa del producto">
-                                    <span class="upload-success">✓ Imagen cargada</span>
-                                    <button type="button" onclick="clearProductImage()" class="btn-clear-img">Quitar</button>
-                                </div>
-                            </div>
+                            <div class="form-actions">
+                                <button type="button" id="btn-delete-prod" onclick="deleteCurrentProduct()" class="btn-danger">🗑️ Eliminar</button>
+                                <button type="button" onclick="closeProductForm()" class="btn-secondary">Cancelar</button>
+                                <button type="submit" class="btn-save">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
 
-                            <div class="form-actions">
-                                <button type="button" id="btn-delete-prod" onclick="deleteCurrentProduct()" class="btn-danger">🗑️ Eliminar</button>
-                                <button type="button" onclick="closeProductForm()" class="btn-secondary">Cancelar</button>
-                                <button type="submit" id="btn-submit-prod" class="btn-save">Guardar</button>
-                            </div>
-                        </form>
-                    </div>
+                    <!-- LISTADO DE PRODUCTOS (ADMIN) -->
+                    <div id="admin-inventory-list" class="admin-list-container">
+                        <!-- Cargado por JS -->
+                    </div>
+                </div>
 
-                    <!-- LISTADO DE PRODUCTOS (ADMIN) -->
-                    <div id="admin-inventory-list" class="admin-list-container">
-                        <!-- Cargado por JS -->
-                    </div>
-                </div>
+                <!-- PESTAÑA 2: VENTAS -->
+                <div id="tab-sales" class="admin-tab-content" style="display: none;">
+                    <div class="admin-stats-cards">
+                        <div class="stat-card">
+                            <small>Total Ventas</small>
+                            <h3 id="stat-total-sales">0</h3>
+                        </div>
+                        <div class="stat-card">
+                            <small>Ingresos Totales</small>
+                            <h3 id="stat-total-eur">€ 0.00</h3>
+                        </div>
+                    </div>
 
-                <!-- PESTAÑA 2: VENTAS -->
-                <div id="tab-sales" class="admin-tab-content step-container-hidden">
-                    <div class="admin-stats-cards">
-                        <div class="stat-card">
-                            <small>Total Ventas</small>
-                            <h3 id="stat-total-sales">0</h3>
-                        </div>
-                        <div class="stat-card">
-                            <small>Ingresos Totales</small>
-                            <h3 id="stat-total-eur">€ 0.00</h3>
-                        </div>
-                    </div>
+                    <!-- REGISTRO DE VENTA MANUAL -->
+                    <div class="manual-sale-section" style="margin-top: 20px; border-top: 2px solid #e2d5e5; padding-top: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h4 style="margin: 0; color: #4a254b;">Registrar Venta Manual / Presencial</h4>
+                            <button type="button" class="cta-button" style="padding: 8px 16px; background-color: #6b21a8; font-size: 0.85rem;" onclick="openManualSaleForm()">
+                                ➕ Registrar Venta Manual
+                            </button>
+                        </div>
 
-                    <!-- REGISTRO DE VENTA MANUAL -->
-                    <div class="manual-sale-section">
-                        <div class="admin-section-header">
-                            <h4 class="modal-title-purple">Registrar Venta Manual / Presencial</h4>
-                            <button type="button" class="cta-button btn-manual-sale" onclick="openManualSaleForm()">
-                                ➕ Registrar Venta Manual
-                            </button>
-                        </div>
+                        <div id="manual-sale-form-box" class="admin-form-box" style="display: none; background: #fdf4ff; border: 2px solid #d8b4fe; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(107, 33, 168, 0.1);">
+                            <h5 style="margin-top: 0; margin-bottom: 15px; color: #6b21a8; text-align: center; font-size: 1.1rem;">NUEVA VENTA EXTERNA</h5>
+                            <form id="manual-sale-form" onsubmit="saveManualSale(event)">
+                                
+                                <div class="form-group" style="margin-bottom: 12px;">
+                                    <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #4a254b;">Cliente:</label>
+                                    <input type="text" id="manual-client" placeholder="Ej. María Pérez" required style="width: 100%; padding: 10px; border: 1px solid #e2d5e5; border-radius: 10px;">
+                                </div>
 
-                        <div id="manual-sale-form-box" class="admin-form-box manual-sale-card step-container-hidden">
-                            <h5 class="manual-sale-title">NUEVA VENTA EXTERNA</h5>
-                            <form id="manual-sale-form" onsubmit="saveManualSale(event)">
-                                
-                                <div class="form-group form-group-spacing">
-                                    <label for="manual-client" class="label-manual">Cliente:</label>
-                                    <input type="text" id="manual-client" placeholder="Ej. María Pérez" required class="input-rounded">
-                                </div>
+                                <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                                    <div class="form-group" style="flex: 1;">
+                                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #4a254b;">Producto:</label>
+                                        <select id="manual-prod-select" required style="width: 100%; padding: 10px; border: 1px solid #e2d5e5; border-radius: 10px;">
+                                            <!-- Se llenará dinámicamente con JS -->
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="flex: 0 0 80px;">
+                                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #4a254b;">Cant.:</label>
+                                        <input type="number" id="manual-qty" value="1" min="1" required style="width: 100%; padding: 10px; border: 1px solid #e2d5e5; border-radius: 10px; text-align: center;">
+                                    </div>
+                                </div>
 
-                                <div class="form-row-flex form-group-spacing">
-                                    <div class="form-group flex-2">
-                                        <label for="manual-prod-select" class="label-manual">Producto:</label>
-                                        <select id="manual-prod-select" required onchange="onManualProductSelectChange()" class="input-rounded">
-                                            <!-- Se llenará dinámicamente con JS -->
-                                        </select>
-                                    </div>
-                                    <div class="form-group flex-1">
-                                        <label for="manual-size-select" class="label-manual">Talla:</label>
-                                        <select id="manual-size-select" required class="input-rounded">
-                                            <option value="">Talla</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group flex-1">
-                                        <label for="manual-qty" class="label-manual">Cant.:</label>
-                                        <input type="number" id="manual-qty" value="1" min="1" required class="input-rounded center-text">
-                                    </div>
-                                </div>
+                                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                                    <div class="form-group" style="flex: 1;">
+                                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #4a254b;">Método de Pago:</label>
+                                        <select id="manual-payment-method" required style="width: 100%; padding: 10px; border: 1px solid #e2d5e5; border-radius: 10px;">
+                                            <option value="">Selecciona método</option>
+                                            <option value="USDT">USDT</option>
+                                            <option value="Cash (€)">Cash (€)</option>
+                                            <option value="Bs. BCV">Bs. BCV</option>
+                                            <option value="Cash (€) + Bs. BCV">Múltiple (°€ + Bs.)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="flex: 1;">
+                                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #4a254b;">Estado del Pago:</label>
+                                        <select id="manual-payment-status" required style="width: 100%; padding: 10px; border: 1px solid #e2d5e5; border-radius: 10px;">
+                                            <option value="Pendiente">❌ Pendiente</option>
+                                            <option value="Pagado">✅ Pago Completo</option>
+                                        </select>
+                                    </div>
+                                </div>
 
-                                <div class="form-row-flex form-group-spacing-lg">
-                                    <div class="form-group flex-1">
-                                        <label for="manual-payment-method" class="label-manual">Método de Pago:</label>
-                                        <select id="manual-payment-method" required class="input-rounded">
-                                            <option value="">Selecciona método</option>
-                                            <option value="USDT">USDT</option>
-                                            <option value="Cash (€)">Cash (€)</option>
-                                            <option value="Bs. BCV">Bs. BCV</option>
-                                            <option value="Cash (€) + Bs. BCV">Múltiple (€ + Bs.)</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group flex-1">
-                                        <label for="manual-payment-status" class="label-manual">Estado del Pago:</label>
-                                        <select id="manual-payment-status" required class="input-rounded">
-                                            <option value="Pendiente">❌ Pendiente</option>
-                                            <option value="Pagado">✅ Pago Completo</option>
-                                        </select>
-                                    </div>
-                                </div>
+                                <div class="form-actions" style="display: flex; gap: 10px; justify-content: flex-end; padding-top: 15px; border-top: 1px solid #e2d5e5;">
+                                    <button type="button" class="btn-secondary" style="padding: 10px 20px; border-radius: 20px;" onclick="hideManualSaleForm()">Cancelar</button>
+                                    <button type="submit" class="btn-save" style="padding: 12px 28px; border-radius: 30px;">Registrar Venta</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
-                                <div class="form-actions form-actions-border">
-                                    <button type="button" class="btn-secondary btn-rounded" onclick="hideManualSaleForm()">Cancelar</button>
-                                    <button type="submit" class="btn-save btn-rounded-lg">Registrar Venta</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                    <!-- HISTORIAL DE PEDIDOS -->
+                    <h5 style="margin: 15px 0 10px 0; color: var(--morado-texto);">Historial de Pedidos</h5>
+                    <div id="admin-sales-list" class="admin-list-container sales-list">
+                        <!-- Cargado por JS -->
+                    </div>
+                </div>
 
-                    <!-- HISTORIAL DE PEDIDOS -->
-                    <h5 class="modal-title-purple sales-history-title">Historial de Pedidos</h5>
-                    <div id="admin-sales-list" class="admin-list-container sales-list">
-                        <!-- Cargado por JS -->
-                    </div>
-                </div>
+                <!-- PESTAÑA 3: TASA BCV -->
+                <div id="tab-rate" class="admin-tab-content" style="display: none;">
+                    <div class="rate-config-box">
+                        <label>Tasa Oficial BCV (Bs por €):</label>
+                        <input type="number" step="0.01" id="admin-rate-input" placeholder="Ej. 36.50">
+                        <button onclick="saveManualRate()" class="cta-button" style="width: 100%; margin-top: 10px;">Actualizar Tasa</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                <!-- PESTAÑA 3: TASA BCV -->
-                <div id="tab-rate" class="admin-tab-content step-container-hidden">
-                    <div class="rate-config-box">
-                        <label for="admin-rate-input">Tasa Oficial BCV (Bs por €):</label>
-                        <input type="number" step="0.01" id="admin-rate-input" placeholder="Ej. 36.50">
-                        <button type="button" onclick="saveManualRate()" class="cta-button btn-full-width btn-margin-top">Actualizar Tasa</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- ==========================================
+         PIE DE PÁGINA (FOOTER)
+         ========================================== -->
+    <footer class="footer">
+        <p>© 2026 CÓSMICA. Todos los derechos reservados.</p>
+    </footer>
 
-    <!-- ==========================================
-         PIE DE PÁGINA (FOOTER)
-         ========================================== -->
-    <footer class="footer">
-        <p>© 2026 CÓSMICA. Todos los derechos reservados.</p>
-    </footer>
+   <!-- ==========================================
+         LIBRERÍAS DE FIREBASE (VERSION COMPAT)
+         ========================================== -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-    <!-- ==========================================
-         LIBRERÍAS DE FIREBASE (VERSION COMPAT)
-         ========================================== -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <!-- INICIALIZACIÓN DE FIREBASE -->
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCoG8XuSTmdRq75XtZ4z6XA8BlkIh51N5g",
+        authDomain: "cosmica-tienda.firebaseapp.com",
+        projectId: "cosmica-tienda",
+        storageBucket: "cosmica-tienda.firebasestorage.app",
+        messagingSenderId: "1037817099642",
+        appId: "1:1037817099642:web:e5d3aed8105196aa4b92c3",
+        measurementId: "G-7V2EMNDE9Q"
+      };
 
-    <!-- INICIALIZACIÓN DE FIREBASE (Asegúrate de restringir tu clave en la consola de GCP) -->
-    <script>
-      const firebaseConfig = {
-        apiKey: "REPLACE_WITH_YOUR_RESTRICTED_API_KEY",
-        authDomain: "cosmica-tienda.firebaseapp.com",
-        projectId: "cosmica-tienda",
-        storageBucket: "cosmica-tienda.firebasestorage.app",
-        messagingSenderId: "1037817099642",
-        appId: "1:1037817099642:web:e5d3aed8105196aa4b92c3",
-        measurementId: "G-7V2EMNDE9Q"
-      };
+      // Inicializar Firebase
+      firebase.initializeApp(firebaseConfig);
+      
+      // Crear la variable global `db` que usa app.js
+      const db = firebase.firestore();
+    </script>
 
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.firestore();
-    </script>
-
-    <!-- ARCHIVO JS PRINCIPAL -->
-    <script src="app.js"></script>
+    <!-- ARCHIVO JS PRINCIPAL -->
+    <script src="app.js"></script>
 </body>
-</html>
+</html> 
