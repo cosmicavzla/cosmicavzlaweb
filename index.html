@@ -49,11 +49,12 @@
                 </div>
                 <div class="select-filters">
                     <select id="filter-category">
-                        <option value="">Todas las categorías</option>
-                        <option value="pijamas">Pijamas</option>
-                        <option value="lenceria">Lencería</option>
-                        <option value="sets">Sets</option>
-                    </select>
+                    <option value="">Todas las categorías</option>
+                    <option value="pijamas">Pijamas</option>
+                    <option value="lenceria">Lencería</option>
+                    <option value="sets">Sets</option>
+                     <option value="accesorios">Accesorios</option>
+                </select>
                 </div>
             </div>
             <div class="products-grid" id="products-container"></div>
@@ -142,8 +143,12 @@
                         <form onsubmit="saveProduct(event)">
                             <input type="text" id="prod-name" placeholder="Nombre" required>
                             <div style="display:flex; gap:10px;">
-                                <select id="prod-cat"><option value="pijamas">Pijamas</option><option value="set">Set</option><option value="lenceria">Lencería</option></select>
-                                <input type="number" id="prod-price" step="0.01" placeholder="Precio €">
+                                <select id="prod-cat" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; font-family: inherit;">
+                                    <option value="pijamas">Pijamas</option>
+                                    <option value="lenceria">Lencería</option>
+                                    <option value="sets">Sets</option>
+                                    <option value="accesorios">Accesorios</option>
+                                </select>
                             </div>
                             <div class="admin-sizes">
                                 <label>Stock por talla:</label>
