@@ -1287,3 +1287,15 @@ h1, h2, h3, h4, h5 {
     transition: transform 0.3s;
 }
 .toast.show { transform: translateY(0); }
+
+/* Estilo para los badges de categoría si decides usarlos */
+.category-badge {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    background: var(--morado-pastel);
+    padding: 2px 8px;
+    border-radius: 5px;
+    color: var(--morado-oscuro);
+    display: inline-block;
+    margin-bottom: 5px;
+}
