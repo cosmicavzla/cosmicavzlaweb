@@ -143,12 +143,18 @@
                         <form onsubmit="saveProduct(event)">
                             <input type="text" id="prod-name" placeholder="Nombre" required>
                             <div style="display:flex; gap:10px;">
-                                <select id="prod-cat" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; font-family: inherit;">
-                                    <option value="pijamas">Pijamas</option>
-                                    <option value="lenceria">Lencería</option>
-                                    <option value="sets">Sets</option>
-                                    <option value="accesorios">Accesorios</option>
-                                </select>
+                                    <div id="tab-products" class="admin-tab-content">
+                    <button onclick="openProductForm()" class="btn-primary">+ Nuevo Producto</button>
+                    <div id="product-form-box" class="admin-form-box" style="display:none; margin-top:15px; background:#f9f9f9; padding:15px; border-radius:10px;">
+                        <form onsubmit="saveProduct(event)">
+                            <input type="text" id="prod-name" placeholder="Nombre" required>
+                            <div style="display:flex; gap:10px; margin-bottom: 10px;">
+                                    <select id="prod-cat" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; font-family: inherit;">
+                                     <option value="pijamas">Pijamas</option>
+                                      <option value="lenceria">Lencería</option>
+                                        <option value="sets">Sets</option>
+                                         <option value="accesorios">Accesorios</option>
+                                     </select>
                             </div>
                             <div class="admin-sizes">
                                 <label>Stock por talla:</label>
