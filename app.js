@@ -5,7 +5,7 @@ let products = [];
 let cart = [];
 let bcvRate = 0;
 let selectedSize = null; 
-let tempImages = ["", "", ""]; 
+let tempImages = ["", "", ""]; // Guarda las 3 fotos en Base64
 let currentOrder = null;
 
 // ==========================================
@@ -66,7 +66,6 @@ function renderCatalog(items) {
     if(!container) return;
     container.innerHTML = "";
     items.forEach(p => {
-        // Usar la primera imagen que no esté vacía
         const displayImg = p.images.find(img => img !== "") || 'img/placeholder.png';
         container.innerHTML += `
             <div class="product-card" onclick="openProductModal('${p.id}')">
@@ -86,8 +85,6 @@ function renderCatalog(items) {
 function openProductModal(id) {
     const p = products.find(prod => prod.id === id);
     selectedSize = null; 
-    
-    // Filtrar imágenes vacías
     const validImages = p.images.filter(img => img !== "");
     
     const modalBody = document.getElementById("modal-body-content");
@@ -135,87 +132,7 @@ function selectSize(btn, size) {
 }
 
 // ==========================================
-// ADMINISTRACIÓN Y PESTAÑAS
-// ==========================================
-async function handleAdminLogin(e) {
-    e.preventDefault();
-    const passInput = document.getElementById("admin-pass").value;
-    const doc = await db.collection("config").doc("admin").get();
-    if (doc.exists && doc.data().password === passInput) {
-        document.getElementById("admin-login-view").style.display = "none";
-        document.getElementById("admin-dashboard-view").style.display = "block";
-        loadAdminInventory();
-    } else { showToast("Clave incorrecta", "error"); }
-}
-
-function switchAdminTab(tab) {
-    document.querySelectorAll(".admin-tab-content").forEach(c => c.style.display = "none");
-    document.querySelectorAll(".admin-tab-btn").forEach(b => b.classList.remove("active"));
-    
-    document.getElementById(`tab-${tab}`).style.display = "block";
-    // Activar botón
-    const btn = document.querySelector(`button[onclick*="${tab}"]`);
-    if(btn) btn.classList.add("active");
-
-    if(tab === 'sales') loadAdminSales();
-}
-
-function loadAdminInventory() {
-    const list = document.getElementById("admin-inventory-list");
-    if(!list) return;
-    list.innerHTML = products.map(p => `
-        <div class="admin-item-row" style="display:flex; justify-content:space-between; margin-bottom:10px; background:#fff; padding:10px; border-radius:8px; color: #333;">
-            <span>${p.name} (S:${p.sizes.S} M:${p.sizes.M} L:${p.sizes.L} XL:${p.sizes.XL || 0})</span>
-            <button onclick="deleteProduct('${p.id}')" style="color:red; border:none; background:none; cursor:pointer; font-weight:bold;">Eliminar</button>
-        </div>
-    `).join('');
-}
-
-// --- GUARDAR PRODUCTO (CORREGIDO) ---
-function previewImg(input, index) {
-    const file = input.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => { tempImages[index - 1] = e.target.result; };
-    reader.readAsDataURL(file);
-}
-
-async function saveProduct(e) {
-    e.preventDefault();
-    
-    const priceVal = document.getElementById("prod-price").value;
-    if(!priceVal) {
-        showToast("⚠️ Ponle un precio", "error");
-        return;
-    }
-
-    const pData = {
-        name: document.getElementById("prod-name").value,
-        category: document.getElementById("prod-cat").value,
-        price: parseFloat(priceVal),
-        images: tempImages,
-        sizes: {
-            S: parseInt(document.getElementById("stock-s").value) || 0,
-            M: parseInt(document.getElementById("stock-m").value) || 0,
-            L: parseInt(document.getElementById("stock-l").value) || 0,
-            XL: parseInt(document.getElementById("stock-xl").value) || 0
-        },
-        date: new Date().toISOString()
-    };
-
-    try {
-        await db.collection("products").add(pData);
-        showToast("✅ ¡Producto Publicado!");
-        document.getElementById("product-form-box").style.display = "none";
-        e.target.reset(); // Limpiar formulario
-        tempImages = ["", "", ""]; // Limpiar fotos
-    } catch (err) {
-        showToast("❌ Error al guardar");
-    }
-}
-
-// ==========================================
-// GESTIÓN DEL CARRITO Y CHECKOUT
+// GESTIÓN DEL CARRITO
 // ==========================================
 function addToCart(id) {
     if (!selectedSize) { showToast("⚠️ Elige una talla", "error"); return; }
@@ -255,7 +172,9 @@ function updateCartUI() {
     document.getElementById("cart-count").textContent = cart.reduce((acc, i) => acc + i.qty, 0);
 }
 
-// [LAS DEMÁS FUNCIONES SE MANTIENEN IGUAL...]
+// ==========================================
+// PROCESO DE CHECKOUT (PASOS)
+// ==========================================
 function openCheckoutModal() {
     if(cart.length === 0) return showToast("Carrito vacío");
     closeCart();
@@ -277,7 +196,7 @@ async function processOrder(e) {
         totalEur: totalEur,
         paymentStatus: "Pendiente",
         date: new Date().toISOString(),
-        items: cart
+        items: [...cart]
     };
     document.getElementById("checkout-step-1").style.display = "none";
     document.getElementById("checkout-step-2").style.display = "block";
@@ -287,18 +206,143 @@ async function processOrder(e) {
 async function registerPayment(e) {
     e.preventDefault();
     currentOrder.paymentRef = document.getElementById("payment-ref").value;
-    await db.collection("orders").add(currentOrder);
-    document.getElementById("final-order-num").textContent = currentOrder.orderNumber;
-    document.getElementById("checkout-step-2").style.display = "none";
-    document.getElementById("checkout-step-3").style.display = "block";
-    cart = []; updateCartUI();
+    
+    try {
+        await db.collection("orders").add(currentOrder);
+        // Descontar Stock
+        for (const item of cart) {
+            const pRef = db.collection("products").doc(item.id);
+            const pDoc = await pRef.get();
+            if(pDoc.exists) {
+                const newSizes = {...pDoc.data().sizes};
+                newSizes[item.selectedSize] = Math.max(0, newSizes[item.selectedSize] - item.qty);
+                await pRef.update({ sizes: newSizes });
+            }
+        }
+        document.getElementById("final-order-num").textContent = currentOrder.orderNumber;
+        document.getElementById("checkout-step-2").style.display = "none";
+        document.getElementById("checkout-step-3").style.display = "block";
+        cart = []; updateCartUI();
+    } catch (err) { showToast("Error al procesar pago"); }
 }
 
 function sendWhatsAppSummary() {
-    const text = `Hola Cósmica! Reporto mi pago.\nPedido: ${currentOrder.orderNumber}\nCliente: ${currentOrder.clientName}\nRef: ${currentOrder.paymentRef}`;
-    window.open(`https://wa.me/584161727585?text=${encodeURIComponent(text)}`);
+    if(!currentOrder) return;
+    const totalVes = (currentOrder.totalEur * bcvRate).toFixed(2);
+    let msg = `✨ *NUEVO PEDIDO CÓSMICA* ✨%0A%0A`;
+    msg += `📌 *Orden:* ${currentOrder.orderNumber}%0A`;
+    msg += `👤 *Cliente:* ${currentOrder.clientName}%0A%0A`;
+    msg += `🛍️ *Productos:*%0A`;
+    currentOrder.items.forEach(i => {
+        msg += `- ${i.name} (${i.selectedSize}) x${i.qty}%0A`;
+    });
+    msg += `%0A💶 *Total:* €${currentOrder.totalEur.toFixed(2)}%0A`;
+    msg += `🇻🇪 *Monto:* ${totalVes} Bs.%0A`;
+    msg += `🔢 *Referencia:* ${currentOrder.paymentRef}%0A%0A`;
+    msg += `Pagaré por Pago Móvil. ¡Espero confirmación! ✨`;
+
+    window.open(`https://wa.me/584121727585?text=${msg}`, "_blank");
 }
 
+// ==========================================
+// ADMINISTRACIÓN
+// ==========================================
+async function handleAdminLogin(e) {
+    e.preventDefault();
+    const passInput = document.getElementById("admin-pass").value;
+    try {
+        const doc = await db.collection("config").doc("admin").get();
+        if (doc.exists && doc.data().password === passInput) {
+            document.getElementById("admin-login-view").style.display = "none";
+            document.getElementById("admin-dashboard-view").style.display = "block";
+            loadAdminInventory();
+        } else { showToast("Clave incorrecta", "error"); }
+    } catch (err) { showToast("Error de conexión"); }
+}
+
+function switchAdminTab(tab) {
+    document.querySelectorAll(".admin-tab-content").forEach(c => c.style.display = "none");
+    document.querySelectorAll(".admin-tab-btn").forEach(b => b.classList.remove("active"));
+    document.getElementById(`tab-${tab}`).style.display = "block";
+    const btn = document.querySelector(`button[onclick*="${tab}"]`);
+    if(btn) btn.classList.add("active");
+    if(tab === 'sales') loadAdminSales();
+}
+
+function loadAdminInventory() {
+    const list = document.getElementById("admin-inventory-list");
+    if(!list) return;
+    list.innerHTML = products.map(p => `
+        <div class="admin-item-row" style="display:flex; justify-content:space-between; margin-bottom:10px; background:#fff; padding:10px; border-radius:8px; color:#333;">
+            <span>${p.name} (S:${p.sizes.S} M:${p.sizes.M} L:${p.sizes.L} XL:${p.sizes.XL})</span>
+            <button onclick="deleteProduct('${p.id}')" style="color:red; border:none; background:none; cursor:pointer; font-weight:bold;">Eliminar</button>
+        </div>
+    `).join('');
+}
+
+async function deleteProduct(id) {
+    if(confirm("¿Eliminar producto?")) await db.collection("products").doc(id).delete();
+}
+
+function loadAdminSales() {
+    db.collection("orders").orderBy("date", "desc").onSnapshot(snapshot => {
+        const sales = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        document.getElementById("stat-total-sales").textContent = sales.length;
+        const total = sales.reduce((acc, s) => acc + s.totalEur, 0);
+        document.getElementById("stat-total-eur").textContent = `€ ${total.toFixed(2)}`;
+        document.getElementById("admin-sales-list").innerHTML = sales.map(s => `
+            <div style="background:#fff; padding:10px; margin-bottom:5px; border-radius:8px; color:#333; display:flex; justify-content:space-between;">
+                <div><strong>${s.clientName}</strong><br><small>${s.orderNumber} - €${s.totalEur.toFixed(2)}</small></div>
+                <button onclick="deleteOrder('${s.id}')" style="border:none; background:none; color:red; cursor:pointer;">🗑️</button>
+            </div>
+        `).join('');
+    });
+}
+
+async function deleteOrder(id) {
+    if(confirm("¿Borrar registro de venta?")) await db.collection("orders").doc(id).delete();
+}
+
+// --- FOTOS Y GUARDAR PRODUCTO ---
+function previewImg(input, index) {
+    const file = input.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => { tempImages[index - 1] = e.target.result; };
+    reader.readAsDataURL(file);
+}
+
+async function saveProduct(e) {
+    e.preventDefault();
+    const priceVal = document.getElementById("prod-price").value;
+    if(!priceVal) return showToast("⚠️ Ponle un precio", "error");
+
+    const pData = {
+        name: document.getElementById("prod-name").value,
+        category: document.getElementById("prod-cat").value,
+        price: parseFloat(priceVal),
+        images: [...tempImages],
+        sizes: {
+            S: parseInt(document.getElementById("stock-s").value) || 0,
+            M: parseInt(document.getElementById("stock-m").value) || 0,
+            L: parseInt(document.getElementById("stock-l").value) || 0,
+            XL: parseInt(document.getElementById("stock-xl").value) || 0
+        },
+        date: new Date().toISOString()
+    };
+
+    try {
+        await db.collection("products").add(pData);
+        showToast("✅ ¡Publicado!");
+        document.getElementById("product-form-box").style.display = "none";
+        e.target.reset();
+        tempImages = ["", "", ""];
+    } catch (err) { showToast("❌ Error al guardar"); }
+}
+
+// ==========================================
+// UTILIDADES
+// ==========================================
 function filterProducts() {
     const search = document.getElementById("search-input").value.toLowerCase();
     const cat = document.getElementById("filter-category").value;
@@ -314,10 +358,6 @@ function showToast(msg) {
     t.textContent = msg;
     document.body.appendChild(t);
     setTimeout(() => { t.remove(); }, 3000);
-}
-
-async function deleteProduct(id) {
-    if(confirm("¿Eliminar producto?")) await db.collection("products").doc(id).delete();
 }
 
 function openAdminModal() { document.getElementById("admin-modal").classList.add("active"); }
