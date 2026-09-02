@@ -23,6 +23,19 @@ body {
 /* ==========================================
     2. NAVEGACIÓN (Ajustada)
    ========================================== */
+ /* Contenedor del logotipo */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+/* Estilo para la imagen del logo */
+.logo img {
+    height: 50px;       /* Controla la altura ideal para la barra */
+    width: auto;        /* Mantiene la proporción original de la imagen */
+    object-fit: contain;
+    display: block;
+}
 .navbar {
     display: flex; justify-content: space-between; align-items: center;
     padding: 10px 5%; background: var(--morado-p);
