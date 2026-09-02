@@ -1,5 +1,5 @@
 /* ==========================================
-   1. BASE Y RESET (Anti-Desborde)
+    1. BASE Y RESET (Anti-Desborde)
    ========================================== */
 :root {
     --morado-p: #6b21a8;
@@ -21,7 +21,7 @@ body {
 }
 
 /* ==========================================
-   2. NAVEGACIÓN (Ajustada)
+    2. NAVEGACIÓN (Ajustada)
    ========================================== */
 .navbar {
     display: flex; justify-content: space-between; align-items: center;
@@ -45,7 +45,7 @@ body {
 }
 
 /* ==========================================
-   3. HERO BANNER (Apilado en móvil)
+    3. HERO BANNER (Apilado en móvil)
    ========================================== */
 .hero-banner {
     display: flex; flex-direction: column-reverse; /* Foto arriba del texto en móvil */
@@ -56,18 +56,20 @@ body {
 .hero-content h2 { font-size: 2rem; color: var(--morado-p); line-height: 1.2; }
 .hero-content p { font-size: 1rem; margin: 15px 0; color: #4b5563; }
 
-.hero-img { width: 100%; max-width: 250px; border-radius: 20px; box-shadow: var(--sombra); }
+.hero-img { width: 100%; max-width: 250px; border-radius: 20px; box-shadow: var(--sombra); margin: 0 auto; }
 
 /* ==========================================
-   4. CATÁLOGO (2 Columnas perfectas)
+    4. CATÁLOGO (2 Columnas perfectas)
    ========================================== */
 .catalog-section { padding: 30px 10px; }
 .section-title { text-align: center; margin-bottom: 25px; font-size: 1.5rem; }
 
 .filters-bar { display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; }
+.search-box { width: 100%; }
 .search-box input, .select-filters select {
     width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd;
 }
+.select-filters { width: 100%; }
 
 .products-grid {
     display: grid; 
@@ -77,15 +79,16 @@ body {
 
 .product-card {
     background: white; border-radius: 15px; overflow: hidden; box-shadow: var(--sombra);
+    display: flex; flex-direction: column; height: 100%;
 }
 
 .product-card img { width: 100%; height: 180px; object-fit: cover; }
-.product-info { padding: 10px; text-align: center; }
+.product-info { padding: 10px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; }
 .product-title { font-size: 0.85rem; font-weight: 600; height: 35px; overflow: hidden; }
-.product-price { color: var(--morado-p); font-weight: 800; font-size: 1rem; }
+.product-price { color: var(--morado-p); font-weight: 800; font-size: 1rem; margin-top: 5px; }
 
 /* ==========================================
-   5. MODAL DE PRODUCTO (CORRECCIÓN CRÍTICA)
+    5. MODAL DE PRODUCTO (CORRECCIÓN CRÍTICA)
    ========================================== */
 .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -106,14 +109,15 @@ body {
 .main-img-box img { width: 100%; height: 100%; object-fit: cover; }
 
 .thumbnails { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding-bottom: 5px; }
-.thumbnails img { width: 55px; height: 55px; border-radius: 8px; flex-shrink: 0; object-fit: cover; border: 2px solid transparent; }
+.thumbnails img { width: 55px; height: 55px; border-radius: 8px; flex-shrink: 0; object-fit: cover; border: 2px solid transparent; cursor: pointer; }
 .thumbnails img.active { border-color: var(--morado-p); }
 
 .size-options { display: flex; gap: 5px; margin: 10px 0; flex-wrap: wrap; justify-content: center; }
-.size-btn { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; background: white; font-size: 0.9rem; }
+.size-btn { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; background: white; font-size: 0.9rem; cursor: pointer; }
+.size-btn.active { border-color: var(--morado-p); background: var(--gris); font-weight: bold; }
 
 /* ==========================================
-   6. PANEL ADMIN (Adaptable)
+    6. PANEL ADMIN (Adaptable)
    ========================================== */
 .admin-header-tabs {
     display: flex; gap: 5px; margin-bottom: 20px; overflow-x: auto; 
@@ -130,38 +134,41 @@ body {
 }
 
 /* ==========================================
-   7. CARRITO (Drawer móvil)
+    7. CARRITO (Drawer móvil)
    ========================================== */
 .cart-drawer {
     position: fixed; top: 0; right: -100%; width: 85%; max-width: 350px;
-    height: 100%; background: white; z-index: 3000; transition: 0.3s;
+    height: 100%; background: white; z-index: 3000; transition: 0.3s ease-in-out;
+    box-shadow: -5px 0 25px rgba(0,0,0,0.15); padding: 20px; overflow-y: auto;
 }
 .cart-drawer.active { right: 0; }
 
 /* ==========================================
-   8. MEDIA QUERIES (Para Computadoras)
+    8. MEDIA QUERIES (Para Computadoras)
    ========================================== */
 @media (min-width: 769px) {
     .navbar { padding: 15px 8%; }
     .logo h1 { font-size: 1.6rem; }
     .nav-links { display: flex; gap: 25px; }
-    .nav-links a { color: white; text-decoration: none; font-weight: 500; }
+    .nav-links a { color: white; text-decoration: none; font-weight: 500; transition: opacity 0.2s; }
+    .nav-links a:hover { opacity: 0.8; }
 
-    .hero-banner { flex-direction: row; text-align: left; padding: 60px 8%; min-height: 500px; }
+    .hero-banner { flex-direction: row; text-align: left; padding: 60px 8%; min-height: 500px; align-items: center; justify-content: space-between; }
+    .hero-content { max-width: 50%; }
     .hero-content h2 { font-size: 3.5rem; }
-    .hero-img { max-width: 450px; }
+    .hero-img { max-width: 450px; margin: 0; }
 
     .catalog-section { padding: 60px 8%; }
     .products-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; }
     .product-card img { height: 320px; }
-    .product-title { font-size: 1.1rem; }
+    .product-title { font-size: 1.1rem; height: auto; }
 
-    .filters-bar { flex-direction: row; justify-content: center; }
+    .filters-bar { flex-direction: row; justify-content: center; align-items: center; }
     .search-box { max-width: 400px; }
-    .select-filters { width: auto; }
+    .select-filters { width: auto; min-width: 200px; }
 
     .modal-content { max-width: 850px; padding: 30px; }
-    .product-detail-layout { flex-direction: row; gap: 40px; }
+    .product-detail-layout { flex-direction: row; gap: 40px; align-items: center; }
     .main-img-box { height: 450px; }
     
     .cta-button { width: auto; padding: 15px 40px; }
@@ -171,11 +178,12 @@ body {
 .cta-button, .btn-primary {
     background: var(--morado-p); color: white; border: none;
     padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s;
+    width: 100%; text-align: center; display: inline-block; text-decoration: none;
 }
-.cta-button:active { transform: scale(0.95); }
+.cta-button:active, .btn-primary:active { transform: scale(0.95); }
 
 .toast {
     position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
     background: #333; color: white; padding: 12px 25px; border-radius: 30px;
-    z-index: 5000; font-size: 0.8rem;
+    z-index: 5000; font-size: 0.8rem; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
