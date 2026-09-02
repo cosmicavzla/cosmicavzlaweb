@@ -66,9 +66,11 @@ function renderCatalog(items) {
     if(!container) return;
     container.innerHTML = "";
     items.forEach(p => {
+        // Usar la primera imagen que no esté vacía
+        const displayImg = p.images.find(img => img !== "") || 'img/placeholder.png';
         container.innerHTML += `
             <div class="product-card" onclick="openProductModal('${p.id}')">
-                <img src="${p.images[0] || 'img/placeholder.png'}" loading="lazy">
+                <img src="${displayImg}" loading="lazy">
                 <div class="product-info">
                     <h4 class="product-title">${p.name}</h4>
                     <p class="product-price">€ ${p.price.toFixed(2)}</p>
@@ -85,13 +87,16 @@ function openProductModal(id) {
     const p = products.find(prod => prod.id === id);
     selectedSize = null; 
     
+    // Filtrar imágenes vacías
+    const validImages = p.images.filter(img => img !== "");
+    
     const modalBody = document.getElementById("modal-body-content");
     modalBody.innerHTML = `
         <div class="product-detail-layout">
             <div class="gallery-container">
-                <div class="main-img-box"><img src="${p.images[0]}" id="main-photo"></div>
+                <div class="main-img-box"><img src="${validImages[0]}" id="main-photo"></div>
                 <div class="thumbnails">
-                    ${p.images.filter(url => url !== "").map((url, i) => `
+                    ${validImages.map((url, i) => `
                         <img src="${url}" onclick="changePhoto('${url}', this)" class="${i===0?'active':''}">
                     `).join('')}
                 </div>
@@ -102,7 +107,7 @@ function openProductModal(id) {
                 <div class="size-selector">
                     <p><strong>Selecciona tu talla:</strong></p>
                     <div class="size-options">
-                        ${['S', 'M', 'L'].map(size => {
+                        ${['S', 'M', 'L', 'XL'].map(size => {
                             const stock = p.sizes[size] || 0;
                             return `<button class="size-btn ${stock <= 0 ? 'disabled' : ''}" 
                                      onclick="selectSize(this, '${size}')" 
@@ -130,7 +135,87 @@ function selectSize(btn, size) {
 }
 
 // ==========================================
-// GESTIÓN DEL CARRITO
+// ADMINISTRACIÓN Y PESTAÑAS
+// ==========================================
+async function handleAdminLogin(e) {
+    e.preventDefault();
+    const passInput = document.getElementById("admin-pass").value;
+    const doc = await db.collection("config").doc("admin").get();
+    if (doc.exists && doc.data().password === passInput) {
+        document.getElementById("admin-login-view").style.display = "none";
+        document.getElementById("admin-dashboard-view").style.display = "block";
+        loadAdminInventory();
+    } else { showToast("Clave incorrecta", "error"); }
+}
+
+function switchAdminTab(tab) {
+    document.querySelectorAll(".admin-tab-content").forEach(c => c.style.display = "none");
+    document.querySelectorAll(".admin-tab-btn").forEach(b => b.classList.remove("active"));
+    
+    document.getElementById(`tab-${tab}`).style.display = "block";
+    // Activar botón
+    const btn = document.querySelector(`button[onclick*="${tab}"]`);
+    if(btn) btn.classList.add("active");
+
+    if(tab === 'sales') loadAdminSales();
+}
+
+function loadAdminInventory() {
+    const list = document.getElementById("admin-inventory-list");
+    if(!list) return;
+    list.innerHTML = products.map(p => `
+        <div class="admin-item-row" style="display:flex; justify-content:space-between; margin-bottom:10px; background:#fff; padding:10px; border-radius:8px; color: #333;">
+            <span>${p.name} (S:${p.sizes.S} M:${p.sizes.M} L:${p.sizes.L} XL:${p.sizes.XL || 0})</span>
+            <button onclick="deleteProduct('${p.id}')" style="color:red; border:none; background:none; cursor:pointer; font-weight:bold;">Eliminar</button>
+        </div>
+    `).join('');
+}
+
+// --- GUARDAR PRODUCTO (CORREGIDO) ---
+function previewImg(input, index) {
+    const file = input.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => { tempImages[index - 1] = e.target.result; };
+    reader.readAsDataURL(file);
+}
+
+async function saveProduct(e) {
+    e.preventDefault();
+    
+    const priceVal = document.getElementById("prod-price").value;
+    if(!priceVal) {
+        showToast("⚠️ Ponle un precio", "error");
+        return;
+    }
+
+    const pData = {
+        name: document.getElementById("prod-name").value,
+        category: document.getElementById("prod-cat").value,
+        price: parseFloat(priceVal),
+        images: tempImages,
+        sizes: {
+            S: parseInt(document.getElementById("stock-s").value) || 0,
+            M: parseInt(document.getElementById("stock-m").value) || 0,
+            L: parseInt(document.getElementById("stock-l").value) || 0,
+            XL: parseInt(document.getElementById("stock-xl").value) || 0
+        },
+        date: new Date().toISOString()
+    };
+
+    try {
+        await db.collection("products").add(pData);
+        showToast("✅ ¡Producto Publicado!");
+        document.getElementById("product-form-box").style.display = "none";
+        e.target.reset(); // Limpiar formulario
+        tempImages = ["", "", ""]; // Limpiar fotos
+    } catch (err) {
+        showToast("❌ Error al guardar");
+    }
+}
+
+// ==========================================
+// GESTIÓN DEL CARRITO Y CHECKOUT
 // ==========================================
 function addToCart(id) {
     if (!selectedSize) { showToast("⚠️ Elige una talla", "error"); return; }
@@ -139,7 +224,7 @@ function addToCart(id) {
     const existing = cart.find(item => item.cartItemId === cartItemId);
 
     if (existing) {
-        if (existing.qty < p.sizes[selectedSize]) existing.qty++;
+        if (existing.qty < (p.sizes[selectedSize] || 0)) existing.qty++;
         else { showToast("Stock agotado"); return; }
     } else {
         cart.push({ ...p, selectedSize, cartItemId, qty: 1 });
@@ -157,7 +242,7 @@ function updateCartUI() {
         total += (item.price * item.qty);
         container.innerHTML += `
             <div class="cart-item" style="display:flex; gap:10px; margin-bottom:10px; align-items:center;">
-                <img src="${item.images[0]}" style="width:50px; height:50px; object-fit:cover; border-radius:5px;">
+                <img src="${item.images.find(img => img !== "")}" style="width:50px; height:50px; object-fit:cover; border-radius:5px;">
                 <div style="flex:1">
                     <h5 style="margin:0">${item.name}</h5>
                     <small>Talla: ${item.selectedSize} | Cant: ${item.qty}</small>
@@ -170,9 +255,7 @@ function updateCartUI() {
     document.getElementById("cart-count").textContent = cart.reduce((acc, i) => acc + i.qty, 0);
 }
 
-// ==========================================
-// PROCESO DE CHECKOUT (PASOS)
-// ==========================================
+// [LAS DEMÁS FUNCIONES SE MANTIENEN IGUAL...]
 function openCheckoutModal() {
     if(cart.length === 0) return showToast("Carrito vacío");
     closeCart();
@@ -196,7 +279,6 @@ async function processOrder(e) {
         date: new Date().toISOString(),
         items: cart
     };
-    
     document.getElementById("checkout-step-1").style.display = "none";
     document.getElementById("checkout-step-2").style.display = "block";
     document.getElementById("checkout-total-ves").textContent = `Total: ${(totalEur * bcvRate).toFixed(2)} Bs.`;
@@ -205,17 +287,7 @@ async function processOrder(e) {
 async function registerPayment(e) {
     e.preventDefault();
     currentOrder.paymentRef = document.getElementById("payment-ref").value;
-    const docRef = await db.collection("orders").add(currentOrder);
-    
-    // Descontar Stock
-    for (const item of cart) {
-        const pRef = db.collection("products").doc(item.id);
-        const pDoc = await pRef.get();
-        const newSizes = {...pDoc.data().sizes};
-        newSizes[item.selectedSize] -= item.qty;
-        await pRef.update({ sizes: newSizes });
-    }
-
+    await db.collection("orders").add(currentOrder);
     document.getElementById("final-order-num").textContent = currentOrder.orderNumber;
     document.getElementById("checkout-step-2").style.display = "none";
     document.getElementById("checkout-step-3").style.display = "block";
@@ -227,88 +299,15 @@ function sendWhatsAppSummary() {
     window.open(`https://wa.me/584161727585?text=${encodeURIComponent(text)}`);
 }
 
-// ==========================================
-// ADMINISTRACIÓN
-// ==========================================
-async function handleAdminLogin(e) {
-    e.preventDefault();
-    const passInput = document.getElementById("admin-pass").value;
-    const doc = await db.collection("config").doc("admin").get();
-    if (doc.exists && doc.data().password === passInput) {
-        document.getElementById("admin-login-view").style.display = "none";
-        document.getElementById("admin-dashboard-view").style.display = "block";
-        loadAdminInventory();
-    } else { showToast("Clave incorrecta", "error"); }
+function filterProducts() {
+    const search = document.getElementById("search-input").value.toLowerCase();
+    const cat = document.getElementById("filter-category").value;
+    const filtered = products.filter(p => 
+        p.name.toLowerCase().includes(search) && (cat === "" || p.category === cat)
+    );
+    renderCatalog(filtered);
 }
 
-function switchAdminTab(tab) {
-    document.querySelectorAll(".admin-tab-btn").forEach(b => b.classList.remove("active"));
-    document.querySelectorAll(".admin-tab-content").forEach(c => c.style.display = "none");
-    event.currentTarget.classList.add("active");
-    document.getElementById(`tab-${tab}`).style.display = "block";
-    if(tab === 'sales') loadAdminSales();
-}
-
-function loadAdminInventory() {
-    const list = document.getElementById("admin-inventory-list");
-    if(!list) return;
-    list.innerHTML = products.map(p => `
-        <div class="admin-item-row" style="display:flex; justify-content:space-between; margin-bottom:10px; background:#fff; padding:10px; border-radius:8px;">
-            <span>${p.name} (S:${p.sizes.S} M:${p.sizes.M} L:${p.sizes.L})</span>
-            <button onclick="deleteProduct('${p.id}')" style="color:red; border:none; background:none; cursor:pointer;">Eliminar</button>
-        </div>
-    `).join('');
-}
-
-async function deleteProduct(id) {
-    if(confirm("¿Eliminar producto?")) await db.collection("products").doc(id).delete();
-}
-
-function loadAdminSales() {
-    db.collection("orders").orderBy("date", "desc").onSnapshot(snapshot => {
-        const sales = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        document.getElementById("stat-total-sales").textContent = sales.length;
-        const total = sales.reduce((acc, s) => acc + s.totalEur, 0);
-        document.getElementById("stat-total-eur").textContent = `€ ${total.toFixed(2)}`;
-        
-        document.getElementById("admin-sales-list").innerHTML = sales.map(s => `
-            <div class="admin-item-row" style="background:#fff; padding:10px; margin-bottom:5px; border-radius:8px;">
-                <strong>${s.clientName}</strong> - € ${s.totalEur.toFixed(2)} [${s.paymentStatus}]
-            </div>
-        `).join('');
-        populateManualSaleSelect();
-    });
-}
-
-// --- FOTOS Y GUARDAR PRODUCTO ---
-function previewImg(input, index) {
-    const file = input.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => { tempImages[index - 1] = e.target.result; };
-    reader.readAsDataURL(file);
-}
-
-async function saveProduct(e) {
-    e.preventDefault();
-    const pData = {
-        name: document.getElementById("prod-name").value,
-        category: document.getElementById("prod-cat").value,
-        price: parseFloat(document.getElementById("prod-price").value),
-        images: tempImages,
-        sizes: {
-            S: parseInt(document.getElementById("stock-s").value) || 0,
-            M: parseInt(document.getElementById("stock-m").value) || 0,
-            L: parseInt(document.getElementById("stock-l").value) || 0
-        }
-    };
-    await db.collection("products").add(pData);
-    showToast("¡Producto Creado!");
-    document.getElementById("product-form-box").style.display = "none";
-    tempImages = ["", "", ""];
-}
-
-// --- UTILIDADES FINALES ---
 function showToast(msg) {
     const t = document.createElement("div");
     t.className = "toast show";
@@ -316,6 +315,11 @@ function showToast(msg) {
     document.body.appendChild(t);
     setTimeout(() => { t.remove(); }, 3000);
 }
+
+async function deleteProduct(id) {
+    if(confirm("¿Eliminar producto?")) await db.collection("products").doc(id).delete();
+}
+
 function openAdminModal() { document.getElementById("admin-modal").classList.add("active"); }
 function closeAdminModal() { document.getElementById("admin-modal").classList.remove("active"); }
 function closeProductModal() { document.getElementById("product-modal").classList.remove("active"); }
