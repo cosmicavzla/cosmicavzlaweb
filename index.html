@@ -4,17 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cósmica | Tienda Oficial</title>
-    <!-- Fuente Premium -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <!-- Iconos Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 
-    <!-- ==========================================
-         BARRA DE NAVEGACIÓN
-         ========================================== -->
+    <!-- BARRA DE NAVEGACIÓN -->
     <header class="navbar">
         <div class="logo"><h1>CÓSMICA</h1></div>
         <nav class="nav-links">
@@ -40,12 +36,11 @@
                 <a href="#catalogo" class="cta-button">Ver Colección</a>
             </div>
             <div class="hero-image-container">
-                <!-- Reemplaza con tu imagen real -->
                 <img src="img/hero.jpg" alt="Cósmica Hero" class="hero-img">
             </div>
         </section>
 
-        <!-- FILTROS Y CATÁLOGO -->
+        <!-- CATÁLOGO -->
         <section class="catalog-section" id="catalogo">
             <h3 class="section-title">Nuestro Catálogo</h3>
             <div class="filters-bar">
@@ -61,36 +56,26 @@
                     </select>
                 </div>
             </div>
-            <div class="products-grid" id="products-container">
-                <!-- Se carga desde app.js -->
-            </div>
+            <div class="products-grid" id="products-container"></div>
         </section>
     </main>
 
-    <!-- ==========================================
-         MODAL DE PRODUCTO (3 FOTOS + ZOOM + TALLAS)
-         ========================================== -->
+    <!-- MODAL DE PRODUCTO (GALERÍA + TALLAS) -->
     <div class="modal-overlay" id="product-modal">
         <div class="modal-content modal-large">
             <button class="close-modal" onclick="closeProductModal()">&times;</button>
-            <div id="modal-body-content">
-                <!-- Contenido Dinámico inyectado por JS -->
-            </div>
+            <div id="modal-body-content"></div>
         </div>
     </div>
 
-    <!-- ==========================================
-         CARRITO LATERAL (DRAWER)
-         ========================================== -->
+    <!-- CARRITO LATERAL -->
     <div class="cart-drawer-overlay" id="cart-drawer-overlay"></div>
     <aside class="cart-drawer" id="cart-drawer">
         <div class="cart-header">
             <h3>Tu Carrito</h3>
             <button onclick="closeCart()" class="close-modal">&times;</button>
         </div>
-        <div class="cart-items-container" id="cart-items-container">
-            <!-- Items aquí -->
-        </div>
+        <div class="cart-items-container" id="cart-items-container"></div>
         <div class="cart-footer">
             <div class="cart-total-row total-highlight">
                 <span>Total:</span>
@@ -100,147 +85,132 @@
         </div>
     </aside>
 
-    <!-- ==========================================
-         MODAL DE CHECKOUT (PASOS DE PAGO)
-         ========================================== -->
+    <!-- MODAL DE CHECKOUT -->
     <div class="modal-overlay" id="checkout-modal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeCheckoutModal()">&times;</button>
-            
-            <!-- Paso 1: Datos -->
             <div id="checkout-step-1">
                 <h3>Datos del Pedido</h3>
                 <form id="checkout-form" onsubmit="processOrder(event)">
-                    <div class="form-group">
-                        <label>Nombre Completo</label>
-                        <input type="text" id="client-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label>WhatsApp</label>
-                        <input type="tel" id="client-phone" required>
-                    </div>
+                    <div class="form-group"><label>Nombre</label><input type="text" id="client-name" required></div>
+                    <div class="form-group"><label>WhatsApp</label><input type="tel" id="client-phone" required></div>
                     <p>Total: <strong id="checkout-total-eur">€ 0.00</strong></p>
                     <button type="submit" class="cta-button" style="width:100%">Confirmar Pedido</button>
                 </form>
             </div>
-
-            <!-- Paso 2: Pago Móvil -->
             <div id="checkout-step-2" style="display:none; text-align:center;">
                 <h3>Pago Móvil</h3>
-                <div class="bcv-box">
-                    <p>Tasa BCV: <span id="bcv-rate-display">0.00</span> Bs/€</p>
-                    <h4 id="checkout-total-ves">Total: 0.00 Bs.</h4>
-                </div>
-                <div class="bank-details">
-                    <p><strong>Banco:</strong> Venezolano de Crédito (0104)</p>
-                    <p><strong>Teléfono:</strong> 0416-1727585</p>
-                    <p><strong>RIF:</strong> V-28469015</p>
-                </div>
+                <div class="bcv-box"><p>Tasa BCV: <span id="bcv-rate-display">0.00</span> Bs/€</p><h4 id="checkout-total-ves">Total: 0.00 Bs.</h4></div>
                 <form onsubmit="registerPayment(event)">
-                    <input type="text" id="payment-ref" placeholder="Últimos 6 dígitos referencia" required maxlength="6">
+                    <input type="text" id="payment-ref" placeholder="Referencia (6 dígitos)" required maxlength="6">
                     <button type="submit" class="cta-button" style="width:100%; margin-top:10px;">Reportar Pago</button>
                 </form>
             </div>
-
-            <!-- Paso 3: Éxito -->
             <div id="checkout-step-3" style="display:none; text-align:center;">
-                <div class="success-icon">🎉</div>
-                <h3>¡Pago Registrado!</h3>
-                <p>Pedido: <strong id="final-order-num"></strong></p>
-                <button class="cta-button" style="background:#25D366" onclick="sendWhatsAppSummary()">Enviar comprobante WhatsApp</button>
+                <div class="success-icon">🎉</div><h3>¡Pago Registrado!</h3>
+                <button class="cta-button" style="background:#25D366" onclick="sendWhatsAppSummary()">Enviar a WhatsApp</button>
             </div>
         </div>
     </div>
 
-    <!-- ==========================================
-         PANEL ADMINISTRADOR (LOGIN + GESTIÓN)
-         ========================================== -->
+    <!-- PANEL ADMINISTRADOR REESTRUCTURADO -->
     <div class="modal-overlay" id="admin-modal">
-        <div class="modal-content">
+        <div class="modal-content modal-large">
             <button class="close-modal" onclick="closeAdminModal()">&times;</button>
             
-            <!-- Login -->
             <div id="admin-login-view">
-                <h3 style="text-align:center">🔐 Panel Control</h3>
+                <h3 style="text-align:center">🔐 Acceso Admin</h3>
                 <form onsubmit="handleAdminLogin(event)">
-                    <div class="form-group">
-                        <label>Contraseña</label>
-                        <input type="password" id="admin-pass" required>
-                    </div>
+                    <input type="password" id="admin-pass" placeholder="Contraseña" required style="width:100%; padding:10px; margin-bottom:10px;">
                     <button type="submit" class="cta-button" style="width:100%">Entrar</button>
                 </form>
             </div>
 
-            <!-- Dashboard -->
             <div id="admin-dashboard-view" style="display:none;">
-                <div class="admin-header-tabs">
+                <!-- Pestañas -->
+                <div class="admin-tabs" style="display:flex; gap:10px; margin-bottom:20px; border-bottom:1px solid #ddd; padding-bottom:10px;">
+                    <button onclick="switchAdminTab('products')" class="admin-tab-btn active">📦 Inventario</button>
+                    <button onclick="switchAdminTab('sales')" class="admin-tab-btn">📊 Ventas</button>
+                    <button onclick="switchAdminTab('rate')" class="admin-tab-btn">⚙️ Tasa BCV</button>
+                    <button onclick="adminLogout()" class="btn-danger" style="margin-left:auto">Salir</button>
+                </div>
+
+                <!-- Pestaña Inventario -->
+                <div id="tab-products" class="admin-tab-content">
                     <button onclick="openProductForm()" class="btn-primary">+ Nuevo Producto</button>
-                    <button onclick="adminLogout()" class="btn-danger">Salir</button>
-                </div>
-
-                <!-- Formulario Producto -->
-                <div id="product-form-box" class="admin-form-box" style="display:none; margin-top:20px;">
-                    <form onsubmit="saveProduct(event)">
-                        <input type="text" id="prod-name" placeholder="Nombre del producto" required>
-                        <div class="form-row">
-                            <select id="prod-cat">
-                                <option value="pijamas">Pijamas</option>
-                                <option value="lenceria">Lencería</option>
-                            </select>
-                            <input type="number" id="prod-price" step="0.01" placeholder="Precio €">
-                        </div>
-                        
-                        <div class="admin-sizes">
-                            <label>Stock por Talla:</label>
-                            <div class="sizes-inputs">
-                                S: <input type="number" id="stock-s" value="0">
-                                M: <input type="number" id="stock-m" value="0">
-                                L: <input type="number" id="stock-l" value="0">
+                    <div id="product-form-box" class="admin-form-box" style="display:none; margin-top:15px; background:#f9f9f9; padding:15px; border-radius:10px;">
+                        <form onsubmit="saveProduct(event)">
+                            <input type="text" id="prod-name" placeholder="Nombre" required>
+                            <div style="display:flex; gap:10px;">
+                                <select id="prod-cat"><option value="pijamas">Pijamas</option><option value="lenceria">Lencería</option></select>
+                                <input type="number" id="prod-price" step="0.01" placeholder="Precio €">
                             </div>
-                        </div>
-
-                        <div class="admin-photos">
-                            <label>Subir 3 Fotos:</label>
-                            <input type="file" id="img-input-1" onchange="previewImg(this, 1)">
-                            <input type="file" id="img-input-2" onchange="previewImg(this, 2)">
-                            <input type="file" id="img-input-3" onchange="previewImg(this, 3)">
-                        </div>
-                        
-                        <button type="submit" class="btn-save">Publicar Producto</button>
-                    </form>
+                            <div class="admin-sizes">
+                                <label>Stock por talla:</label>
+                                S: <input type="number" id="stock-s" value="0" style="width:50px">
+                                M: <input type="number" id="stock-m" value="0" style="width:50px">
+                                L: <input type="number" id="stock-l" value="0" style="width:50px">
+                            </div>
+                            <div class="admin-photos">
+                                <label>Fotos (3):</label>
+                                <input type="file" onchange="previewImg(this, 1)">
+                                <input type="file" onchange="previewImg(this, 2)">
+                                <input type="file" onchange="previewImg(this, 3)">
+                            </div>
+                            <button type="submit" class="btn-save">Publicar</button>
+                        </form>
+                    </div>
+                    <div id="admin-inventory-list" style="margin-top:20px;"></div>
                 </div>
-                <hr>
-                <div id="admin-inventory-list"></div>
+
+                <!-- Pestaña Ventas -->
+                <div id="tab-sales" class="admin-tab-content" style="display:none;">
+                    <div style="display:flex; gap:15px; margin-bottom:15px;">
+                        <div class="stat-card">Total Ventas: <strong id="stat-total-sales">0</strong></div>
+                        <div class="stat-card">Ingresos: <strong id="stat-total-eur">€ 0.00</strong></div>
+                    </div>
+                    <button onclick="openManualSaleForm()" class="btn-primary" style="width:100%; margin-bottom:15px;">+ Venta Manual / WhatsApp</button>
+                    <div id="manual-sale-form-box" style="display:none; background:#f0f7ff; padding:15px; border-radius:10px; margin-bottom:15px;">
+                        <form onsubmit="saveManualSale(event)">
+                            <input type="text" id="manual-client" placeholder="Nombre Cliente" required>
+                            <select id="manual-prod-select"></select>
+                            <input type="number" id="manual-qty" value="1" min="1" style="width:60px">
+                            <button type="submit" class="btn-save">Registrar</button>
+                        </form>
+                    </div>
+                    <div id="admin-sales-list"></div>
+                </div>
+
+                <!-- Pestaña Tasa -->
+                <div id="tab-rate" class="admin-tab-content" style="display:none;">
+                    <div class="rate-box" style="background:#f9f9f9; padding:20px; border-radius:10px;">
+                        <label>Nueva Tasa BCV (Bs/€):</label>
+                        <input type="number" id="admin-rate-input" step="0.01" style="padding:8px; margin:10px 0; width:100%;">
+                        <button onclick="saveManualRate()" class="cta-button" style="width:100%">Actualizar Tasa</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <p>© 2026 CÓSMICA | Tu brillo es universal ✨</p>
-    </footer>
+    <footer class="footer"><p>© 2026 CÓSMICA | Tu brillo es universal ✨</p></footer>
 
-    <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    
-    <!-- Tu Inicialización de Firebase -->
     <script>
+        // RECUERDA PONER TUS CREDENCIALES AQUÍ
         const firebaseConfig = {
-  apiKey: "AIzaSyCoG8XuSTmdRq75XtZ4z6XA8BlkIh51N5g",
-  authDomain: "cosmica-tienda.firebaseapp.com",
-  projectId: "cosmica-tienda",
-  storageBucket: "cosmica-tienda.firebasestorage.app",
-  messagingSenderId: "1037817099642",
-  appId: "1:1037817099642:web:e5d3aed8105196aa4b92c3",
-  measurementId: "G-7V2EMNDE9Q"
-};
+            apiKey: "TU_API_KEY",
+            authDomain: "tu-app.firebaseapp.com",
+            projectId: "tu-app",
+            storageBucket: "tu-app.appspot.com",
+            messagingSenderId: "12345",
+            appId: "tu-app-id"
+        };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         lucide.createIcons();
     </script>
-    
-    <!-- Tu JS Principal -->
     <script src="app.js"></script>
 </body>
 </html>
