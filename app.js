@@ -424,11 +424,50 @@ async function deleteOrder(id) {
 // 8. UTILIDADES Y OTROS
 // ==========================================
 
+// ==========================================
+// 8. UTILIDADES Y OTROS (Modificado con Compresión)
+// ==========================================
+
 function previewImg(input, index) {
     const file = input.files[0];
-    if(!file) return;
+    if (!file) return;
+
     const reader = new FileReader();
-    reader.onload = (e) => { tempImages[index - 1] = e.target.result; };
+    reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = () => {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+
+            // Definir dimensiones máximas (ancho o alto de 800px)
+            const MAX_WIDTH = 800;
+            const MAX_HEIGHT = 800;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+            } else {
+                if (height > MAX_HEIGHT) {
+                    width *= MAX_HEIGHT / height;
+                    height = MAX_HEIGHT;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+
+            // Dibujar y comprimir en formato JPEG al 60 de calidad (0.6)
+            ctx.drawImage(img, 0, 0, width, height);
+            tempImages[index - 1] = canvas.toDataURL("image/jpeg", 0.6);
+            
+            showToast(`Imagen ${index} optimizada 📉`);
+        };
+    };
     reader.readAsDataURL(file);
 }
 
