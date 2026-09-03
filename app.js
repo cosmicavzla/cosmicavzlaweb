@@ -320,6 +320,9 @@ async function saveProduct(e) {
     const id = document.getElementById("edit-prod-id").value;
     const priceVal = document.getElementById("prod-price").value;
 
+    // Verificar si hay alguna imagen a mitad de carga
+    showToast("Guardando producto...");
+
     const pData = {
         name: document.getElementById("prod-name").value,
         category: document.getElementById("prod-cat").value,
@@ -337,16 +340,18 @@ async function saveProduct(e) {
     try {
         if(id) {
             await db.collection("products").doc(id).update(pData);
-            showToast("✅ Actualizado");
+            showToast("✅ Actualizado con éxito");
         } else {
             await db.collection("products").add(pData);
-            showToast("✅ Publicado");
+            showToast("✅ Publicado con éxito");
         }
         closeProductForm();
         e.target.reset();
-    } catch (err) { showToast("❌ Error"); }
+    } catch (err) {
+        console.error("Error detallado de Firestore:", err);
+        showToast("❌ Error al guardar en la base de datos");
+    }
 }
-
 function closeProductForm() {
     document.getElementById("product-form-box").style.display = "none";
     document.getElementById("edit-prod-id").value = "";
