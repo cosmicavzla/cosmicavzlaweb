@@ -200,3 +200,20 @@ body {
     background: #333; color: white; padding: 12px 25px; border-radius: 30px;
     z-index: 5000; font-size: 0.8rem; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
+/* Tarjeta de producto agotado */
+.product-card.sold-out img {
+    opacity: 0.5;
+}
+
+.product-card.sold-out {
+    position: relative;
+}
+
+/* Estilo para los botones de tallas agotadas en el modal */
+.size-btn.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background-color: #e5e7eb;
+    border-color: #d1d5db;
+    text-decoration: line-through;
+}
