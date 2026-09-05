@@ -70,12 +70,20 @@ function renderCatalog(items) {
     container.innerHTML = "";
     items.forEach(p => {
         const displayImg = p.images.find(img => img !== "") || 'img/placeholder.png';
+        
+        // Calcular stock total sumando todas las tallas
+        const totalStock = Object.values(p.sizes || {}).reduce((a, b) => a + b, 0);
+        const isSoldOut = totalStock <= 0;
+
         container.innerHTML += `
-            <div class="product-card" onclick="openProductModal('${p.id}')">
-                <img src="${displayImg}" loading="lazy">
+            <div class="product-card ${isSoldOut ? 'sold-out' : ''}" onclick="openProductModal('${p.id}')">
+                <div style="position: relative;">
+                    <img src="${displayImg}" loading="lazy">
+                    ${isSoldOut ? '<span style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: #fff; padding: 4px 10px; font-size: 0.75rem; border-radius: 4px; font-weight: bold; text-transform: uppercase;">Agotado</span>' : ''}
+                </div>
                 <div class="product-info">
                     <h4 class="product-title">${p.name}</h4>
-                    <p class="product-price">€ ${p.price.toFixed(2)}</p>
+                    <p class="product-price" style="${isSoldOut ? 'opacity: 0.5;' : ''}">€ ${p.price.toFixed(2)}</p>
                 </div>
             </div>
         `;
@@ -110,8 +118,8 @@ function openProductModal(id) {
                         ${['S', 'M', 'L', 'XL'].map(size => {
                             const stock = p.sizes[size] || 0;
                             return `<button class="size-btn ${stock <= 0 ? 'disabled' : ''}" 
-                                     onclick="selectSize(this, '${size}')" 
-                                     ${stock <= 0 ? 'disabled' : ''}>${size}</button>`;
+                                   onclick="selectSize(this, '${size}')" 
+                                   ${stock <= 0 ? 'disabled' : ''}>${size}</button>`;
                         }).join('')}
                     </div>
                 </div>
